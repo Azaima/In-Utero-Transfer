@@ -7,15 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ABDF0B7ACB5C722558989C53 /* Pods_IUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBEECC5A1DBA1D85B8516973 /* Pods_IUT.framework */; };
 		E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32A71E3EEAD3000634AD /* AppDelegate.swift */; };
 		E70B32AA1E3EEAD3000634AD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32A91E3EEAD3000634AD /* ViewController.swift */; };
 		E70B32AD1E3EEAD3000634AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E70B32AB1E3EEAD3000634AD /* Main.storyboard */; };
 		E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E70B32AE1E3EEAD3000634AD /* IUT.xcdatamodeld */; };
 		E70B32B21E3EEAD3000634AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E70B32B11E3EEAD3000634AD /* Assets.xcassets */; };
 		E70B32B51E3EEAD3000634AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E70B32B31E3EEAD3000634AD /* LaunchScreen.storyboard */; };
+		E70B32BD1E3EEBA0000634AD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3AFC87CB6D3C6C2D428AB4DC /* Pods-IUT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IUT.release.xcconfig"; path = "Pods/Target Support Files/Pods-IUT/Pods-IUT.release.xcconfig"; sourceTree = "<group>"; };
+		5EE3192D91B22EE312E46E31 /* Pods-IUT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IUT.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IUT/Pods-IUT.debug.xcconfig"; sourceTree = "<group>"; };
 		E70B32A41E3EEAD3000634AD /* IUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E70B32A71E3EEAD3000634AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E70B32A91E3EEAD3000634AD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -24,6 +28,8 @@
 		E70B32B11E3EEAD3000634AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E70B32B41E3EEAD3000634AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E70B32B61E3EEAD3000634AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FBEECC5A1DBA1D85B8516973 /* Pods_IUT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IUT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +37,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABDF0B7ACB5C722558989C53 /* Pods_IUT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0948A4F578EC7D3610FA6921 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5EE3192D91B22EE312E46E31 /* Pods-IUT.debug.xcconfig */,
+				3AFC87CB6D3C6C2D428AB4DC /* Pods-IUT.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		124DB25E8CC020F2EE0CE73C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FBEECC5A1DBA1D85B8516973 /* Pods_IUT.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E70B329B1E3EEAD3000634AD = {
 			isa = PBXGroup;
 			children = (
 				E70B32A61E3EEAD3000634AD /* IUT */,
 				E70B32A51E3EEAD3000634AD /* Products */,
+				0948A4F578EC7D3610FA6921 /* Pods */,
+				124DB25E8CC020F2EE0CE73C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +82,7 @@
 		E70B32A61E3EEAD3000634AD /* IUT */ = {
 			isa = PBXGroup;
 			children = (
+				E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */,
 				E70B32A71E3EEAD3000634AD /* AppDelegate.swift */,
 				E70B32A91E3EEAD3000634AD /* ViewController.swift */,
 				E70B32AB1E3EEAD3000634AD /* Main.storyboard */,
@@ -74,9 +101,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E70B32B91E3EEAD3000634AD /* Build configuration list for PBXNativeTarget "IUT" */;
 			buildPhases = (
+				F9C59250D485692040F8F448 /* [CP] Check Pods Manifest.lock */,
 				E70B32A01E3EEAD3000634AD /* Sources */,
 				E70B32A11E3EEAD3000634AD /* Frameworks */,
 				E70B32A21E3EEAD3000634AD /* Resources */,
+				A065194F908507310FD3DEA9 /* [CP] Embed Pods Frameworks */,
+				999BB62D8F3A76F76F8D161C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -128,12 +158,61 @@
 			buildActionMask = 2147483647;
 			files = (
 				E70B32B51E3EEAD3000634AD /* LaunchScreen.storyboard in Resources */,
+				E70B32BD1E3EEBA0000634AD /* GoogleService-Info.plist in Resources */,
 				E70B32B21E3EEAD3000634AD /* Assets.xcassets in Resources */,
 				E70B32AD1E3EEAD3000634AD /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		999BB62D8F3A76F76F8D161C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IUT/Pods-IUT-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A065194F908507310FD3DEA9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-IUT/Pods-IUT-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F9C59250D485692040F8F448 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E70B32A01E3EEAD3000634AD /* Sources */ = {
@@ -263,10 +342,12 @@
 		};
 		E70B32BA1E3EEAD3000634AD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5EE3192D91B22EE312E46E31 /* Pods-IUT.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 9MT4EUS42Y;
 				INFOPLIST_FILE = IUT/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Zaima.IUT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -276,10 +357,12 @@
 		};
 		E70B32BB1E3EEAD3000634AD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AFC87CB6D3C6C2D428AB4DC /* Pods-IUT.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 9MT4EUS42Y;
 				INFOPLIST_FILE = IUT/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Zaima.IUT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
