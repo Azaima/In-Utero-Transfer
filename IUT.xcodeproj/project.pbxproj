@@ -9,12 +9,17 @@
 /* Begin PBXBuildFile section */
 		ABDF0B7ACB5C722558989C53 /* Pods_IUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBEECC5A1DBA1D85B8516973 /* Pods_IUT.framework */; };
 		E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32A71E3EEAD3000634AD /* AppDelegate.swift */; };
-		E70B32AA1E3EEAD3000634AD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32A91E3EEAD3000634AD /* ViewController.swift */; };
+		E70B32AA1E3EEAD3000634AD /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32A91E3EEAD3000634AD /* MainVC.swift */; };
 		E70B32AD1E3EEAD3000634AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E70B32AB1E3EEAD3000634AD /* Main.storyboard */; };
 		E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E70B32AE1E3EEAD3000634AD /* IUT.xcdatamodeld */; };
 		E70B32B21E3EEAD3000634AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E70B32B11E3EEAD3000634AD /* Assets.xcassets */; };
 		E70B32B51E3EEAD3000634AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E70B32B31E3EEAD3000634AD /* LaunchScreen.storyboard */; };
 		E70B32BD1E3EEBA0000634AD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */; };
+		E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C11E40C059000634AD /* ShadowEffect.swift */; };
+		E70B32C41E40C1B6000634AD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C31E40C1B6000634AD /* Constants.swift */; };
+		E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C51E40CEAC000634AD /* SignInVC.swift */; };
+		E70B32C81E410F57000634AD /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C71E410F57000634AD /* DataService.swift */; };
+		E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C91E411EC4000634AD /* HospitalStruct.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,13 +27,18 @@
 		5EE3192D91B22EE312E46E31 /* Pods-IUT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IUT.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IUT/Pods-IUT.debug.xcconfig"; sourceTree = "<group>"; };
 		E70B32A41E3EEAD3000634AD /* IUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E70B32A71E3EEAD3000634AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E70B32A91E3EEAD3000634AD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E70B32A91E3EEAD3000634AD /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		E70B32AC1E3EEAD3000634AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E70B32AF1E3EEAD3000634AD /* IUT.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IUT.xcdatamodel; sourceTree = "<group>"; };
 		E70B32B11E3EEAD3000634AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E70B32B41E3EEAD3000634AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E70B32B61E3EEAD3000634AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E70B32C11E40C059000634AD /* ShadowEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowEffect.swift; sourceTree = "<group>"; };
+		E70B32C31E40C1B6000634AD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E70B32C51E40CEAC000634AD /* SignInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
+		E70B32C71E410F57000634AD /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		E70B32C91E411EC4000634AD /* HospitalStruct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalStruct.swift; sourceTree = "<group>"; };
 		FBEECC5A1DBA1D85B8516973 /* Pods_IUT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IUT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -82,16 +92,45 @@
 		E70B32A61E3EEAD3000634AD /* IUT */ = {
 			isa = PBXGroup;
 			children = (
+				E70B32C01E3EEEBF000634AD /* Model */,
+				E70B32BF1E3EEEB0000634AD /* View */,
+				E70B32BE1E3EEEA4000634AD /* Controller */,
 				E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */,
-				E70B32A71E3EEAD3000634AD /* AppDelegate.swift */,
-				E70B32A91E3EEAD3000634AD /* ViewController.swift */,
-				E70B32AB1E3EEAD3000634AD /* Main.storyboard */,
 				E70B32B11E3EEAD3000634AD /* Assets.xcassets */,
 				E70B32B31E3EEAD3000634AD /* LaunchScreen.storyboard */,
 				E70B32B61E3EEAD3000634AD /* Info.plist */,
 				E70B32AE1E3EEAD3000634AD /* IUT.xcdatamodeld */,
 			);
 			path = IUT;
+			sourceTree = "<group>";
+		};
+		E70B32BE1E3EEEA4000634AD /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E70B32A91E3EEAD3000634AD /* MainVC.swift */,
+				E70B32C51E40CEAC000634AD /* SignInVC.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		E70B32BF1E3EEEB0000634AD /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E70B32C11E40C059000634AD /* ShadowEffect.swift */,
+				E70B32AB1E3EEAD3000634AD /* Main.storyboard */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		E70B32C01E3EEEBF000634AD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E70B32C91E411EC4000634AD /* HospitalStruct.swift */,
+				E70B32A71E3EEAD3000634AD /* AppDelegate.swift */,
+				E70B32C31E40C1B6000634AD /* Constants.swift */,
+				E70B32C71E410F57000634AD /* DataService.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,7 +258,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E70B32AA1E3EEAD3000634AD /* ViewController.swift in Sources */,
+				E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */,
+				E70B32C41E40C1B6000634AD /* Constants.swift in Sources */,
+				E70B32C81E410F57000634AD /* DataService.swift in Sources */,
+				E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */,
+				E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */,
+				E70B32AA1E3EEAD3000634AD /* MainVC.swift in Sources */,
 				E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */,
 				E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */,
 			);
@@ -389,6 +433,7 @@
 				E70B32BB1E3EEAD3000634AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
