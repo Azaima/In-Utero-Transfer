@@ -27,7 +27,11 @@ typealias DownloadComplete = () -> ()
 let locationManager = CLLocationManager()
 
 var currentHospital: HospitalStruct?
-var hospitalsArray = [HospitalStruct(name: "", address: "", location: CLLocation(latitude: 0, longitude: 0), network: "", level: 0, distanceFromMe: 0, subspecialty: "", switchBoard: "", nicuNumber: "", nicuCoordinator: "", labourWard: "")]
+
+let NO_HOSPITAL = HospitalStruct(name: "(None)", address: "", location: CLLocation(latitude: 0, longitude: 0), network: "", level: 0, distanceFromMe: 0, subspecialty: "", switchBoard: "", nicuNumber: "", nicuCoordinator: "", labourWard: "")
+let EBS_Struct = HospitalStruct(name: "E B S", address: "", location: CLLocation(latitude: 0, longitude: 0), network: "", level: 0, distanceFromMe: 0, subspecialty: "", switchBoard: "", nicuNumber: "", nicuCoordinator: "", labourWard: "")
+
+var hospitalsArray = [NO_HOSPITAL, EBS_Struct]
 var sortedHospitalsArray = [[[HospitalStruct]]]()
 var currentLocation: CLLocation!
 var selectedHospital: HospitalStruct?
@@ -40,12 +44,13 @@ let USER_UID = "uid"
 
 var loggedInUserID: String?
 var loggedInUserData: [String:Any]?
-var loggedInUserHospital: HospitalStruct?
+//var loggedInUserHospital: HospitalStruct?
 
 func sortHospitalsToNetworksAndLevels() {
     
     var hospitalsListed = hospitalsArray
-    hospitalsListed.removeFirst()
+    
+    hospitalsListed.removeFirst(2)
     print("Started sorting")
     
     var sortedHospitals = Array(repeating: Array(repeatElement([HospitalStruct](), count: 3)), count: 3)

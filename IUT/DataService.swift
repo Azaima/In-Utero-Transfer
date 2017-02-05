@@ -20,7 +20,7 @@ class DataService {
     private var _REF_HOSPITALS = DB_BASE.child("Hospitals")
     private var _REF_HOSPITALS_ARCHIVE = DB_BASE.child("hospitalArchive")
     private var _REF_USERS = DB_BASE.child("users")
-    private var _REF_NEWUSER = DB_BASE.child("newUsers")
+    private var _REF_USER_BYHOSPITAL = DB_BASE.child("userByHospital")
     
     private var _REF_FEEDBACK = DB_BASE.child("feedback")
     private var _REF_FEEDBACK_ARCHIVE = DB_BASE.child("feedbackArchive")
@@ -38,8 +38,8 @@ class DataService {
         return _REF_USERS
     }
     
-    var REF_NEWUSER: FIRDatabaseReference {
-        return _REF_NEWUSER
+    var REF_USER_BYHOSPITAL: FIRDatabaseReference {
+        return _REF_USER_BYHOSPITAL
     }
     
     var REF_FEEDBACK: FIRDatabaseReference {
@@ -52,15 +52,17 @@ class DataService {
     
     
     
-    func createFireBaseDBUser(uid: String, userData: [String: Any]) {
+    func createFireBaseDBUser(uid: String, hospital: String, userData: [String: Any]) {
+        
         REF_USERS.child(uid).updateChildValues(userData)
-        REF_NEWUSER.child(uid).setValue(userData["hospital"]!)
+        REF_USER_BYHOSPITAL.child(hospital).updateChildValues([uid: userData["email"]!])
+        
     }
     
     func updateUserProfile(uid: String, userData: [String: Any], wasNew: Bool) {
         REF_USERS.child(uid).updateChildValues(userData)
         if wasNew {
-            REF_NEWUSER.child(uid).removeValue()
+            REF_USERS.child(uid).child("newUser").removeValue()
         }
     }
     
@@ -68,7 +70,8 @@ class DataService {
         formatter.dateFormat = "dd-MM-yy HH:mm"
         let message = [
         "body": body,
-        "user": userID]
+        "user": userID,
+        "username": "\(loggedInUserData?["firstName"] as! String) \(loggedInUserData?["surname"] as! String)"]
         REF_FEEDBACK.child(hospital).child("\(title) - (\(formatter.string(from: date)))").updateChildValues(message)
     }
     
@@ -88,6 +91,11 @@ class DataService {
         }
         
         REF_HOSPITALS.child(name).updateChildValues(hospitalData)
+    }
+    
+    func archiveFeedback( title: String, message: [String: Any]){
+        REF_FEEDBACK_ARCHIVE.child(loggedInUserData?["hospital"] as! String).child(title).updateChildValues(message)
+        REF_FEEDBACK.child(loggedInUserData?["hospital"] as! String).child(title).removeValue()
     }
     
 }

@@ -27,6 +27,8 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
     
     var newHospitalUsers = [[String: Any]]()
     var existingHospitalUsers = [[String: Any]]()
+    var completeList = [[String: Any]]()
+    
     
     var searchingNewUsers = [[String:Any]]()
     var searchingExistingUsers = [[String:Any]]()
@@ -46,50 +48,51 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
     //MARK: Getting the data from Firebase
     
     func getCompleteList() {
-        var completeList = [[String:Any]]()
-        var newList = [[String: Any]]()
-        var existingList = [[String:Any]]()
         
-        DataService.ds.REF_USERS.observe(.value, with: { (snapshot) in
-            completeList = []
-            if let snapShot = snapshot.children.allObjects as? [FIRDataSnapshot] {
-                for snap in snapShot {
-                    var userData = snap.value as! [String:Any]
-                    
-                     if (userData["hospital"]!) as? String == (loggedInUserData?["hospital"] as! String) {
-                        
-                        userData["userID"] = snap.key
-                        completeList.append(userData)
-                    }
-                    
-                }
-            }
+        DataService.ds.REF_USER_BYHOSPITAL.child(loggedInUserData?["hospital"] as! String).observe( .value, with: { (hospitalUsersSnapshot) in
             
-            DataService.ds.REF_NEWUSER.observe(.value, with: { (snapshot) in
-                newList = []
-                existingList = []
-                let snapShot = snapshot.children.allObjects as! [FIRDataSnapshot]
-                
-                for userData in completeList {
-                    if snapShot.contains(where: { (FIRDataSnapshot) -> Bool in
-                        return FIRDataSnapshot.key == userData["userID"] as! String
-                    }) {
-                        newList.append(userData)
+            
+            let hospitalUsers = hospitalUsersSnapshot.children.allObjects as! [FIRDataSnapshot]
+            
+            for hospUser in hospitalUsers {
+                DataService.ds.REF_USERS.child(hospUser.key).observe( .value, with: { (snapshot) in
+                    var userData = snapshot.value as! [String: Any]
+                    userData["userID"] = hospUser.key
+                    print(hospUser.key)
+                    
+                    print(userData)
+                    if userData["newUser"] != nil, (userData["newUser"] as! String) == "true" {
+                        self.checkAndAppend(array: &self.newHospitalUsers, userData: userData)
                         
                     }   else {
-                        existingList.append(userData)
+                        
+                        self.checkAndAppend(array: &self.existingHospitalUsers, userData: userData)
                     }
-                }
-             
-                self.newHospitalUsers = newList
-                self.existingHospitalUsers = existingList
-                self.allHospitalUsers = completeList
-            })
-            
+                    
+                    
+                    self.checkAndAppend(array: &self.allHospitalUsers, userData: userData)
+                })
+                
+                
+            }
             
         })
     }
     
+    func checkAndAppend(array: inout [[String:Any]], userData: [String: Any]) {
+        
+        if array.contains(where: { (dict: [String : Any]) -> Bool in
+            return dict["userID"] as! String == userData["userID"] as! String
+        }) {
+            array[array.index(where: { (dict: [String : Any]) -> Bool in
+                return dict["userID"] as! String == userData["userID"] as! String
+            })!] = userData
+            
+        }   else {
+            array.append(userData)
+        }
+    }
+ 
     
     //MARK: SearchBar delegate
     

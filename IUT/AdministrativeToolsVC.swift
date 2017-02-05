@@ -23,7 +23,7 @@ class AdministrativeToolsVC: UIViewController {
     }
     
     func setupView() {
-        if loggedInUserData?["hospital"] as? String == "" && loggedInUserData?["adminRights"] as? String == "true" || loggedInUserData?["superUser"] as? String == "true" {
+        if loggedInUserData?["hospital"] as? String == "(None)" && loggedInUserData?["adminRights"] as? String == "true" || loggedInUserData?["superUser"] as? String == "true" {
             hospitalDBButton.isHidden = false
         }
         
@@ -47,11 +47,16 @@ class AdministrativeToolsVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "singleHospitalDetails" {
             let destination = segue.destination as! HospitalDetailsVC
-            destination.hospital = loggedInUserHospital
+            destination.hospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                return HospitalStruct.name == loggedInUserData?["hospital"] as! String
+            })!]
         }
     }
 
     @IBAction func linkedUsersPressed(_ sender: UIButton) {
         performSegue(withIdentifier: "UsersTableVC", sender: nil)
+    }
+    @IBAction func feedbackReviewPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "FeedbackListVC", sender: nil)
     }
 }

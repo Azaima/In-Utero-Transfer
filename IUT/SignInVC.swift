@@ -29,6 +29,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     var mainVC = MainVC()
     let roles = ["", "Admin", "Neonatologist", "Obstetrician"]
     var userID: String?
+    var hospital: String?
     var userData = [String:Any]()
     var successfulRegistration = false
     
@@ -101,14 +102,8 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
                         return
                     }
                     
-                    
-                    
-                    print("Ahmed: Successfully signed in")
                     self.userID = user?.uid
-                    self.getUserData {
-                        self.updateMainScreen()
-                        _ = self.navigationController?.popViewController(animated: true)
-                    }
+                    self.getUserData ()
                 })
             }
         case true:
@@ -123,9 +118,10 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
                                 return
                             }
                             self.userID = user?.uid
-                            self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)], "hospital": hospitalsArray[self.hospitalPicker.selectedRow(inComponent: 0)].name, "email":email]
+                            self.hospital = hospitalsArray[self.hospitalPicker.selectedRow(inComponent: 0)].name
+                            self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)],"hospital": self.hospital! ,"email":email, "newUser": "true"]
                             
-                            DataService.ds.createFireBaseDBUser(uid: (user?.uid)!, userData: self.userData)
+                            DataService.ds.createFireBaseDBUser(uid: (user?.uid)!, hospital: self.hospital! ,userData: self.userData)
                             self.updateMainScreen()
                             self.signInButton.setTitle("Done", for: .normal)
                             self.signInButton.backgroundColor = UIColor(red: 0, green: 230/255, blue: 118/255, alpha: 1)
@@ -183,12 +179,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     func successfullySignedIn() {
         
         if userData.isEmpty {
-            getUserData {
-                print("Ahmed: Successfully obtained data")
-                self.updateMainScreen()
-                _ = self.navigationController?.popViewController(animated: true)
-
-            }
+            getUserData()
         }   else {
             self.updateMainScreen()
             
@@ -197,27 +188,23 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     }
     
     func updateMainScreen() {
-        self.mainVC.toggleSignInButton(signedIn: true, userData: userData)
+        self.mainVC.toggleSignInButton(signedIn: true, hospital: userData["hospital"] as! String ,userData: userData)
         
         KeychainWrapper.standard.set(userID!, forKey: USER_UID)
+        KeychainWrapper.standard.set(userData["hospital"] as! String, forKey: "hospital")
         
         loggedInUserID = userID
         loggedInUserData = userData
-        if userData["hospital"] as? String != "" {
-            loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                return HospitalStruct.name == userData["hospital"] as! String
-            })!]
-            self.mainVC.userLabel.text = "\((self.mainVC.userLabel.text)!)\nUser is linked to \((loggedInUserHospital?.name)!)"
-        }
-
+        
     }
     
-    func getUserData(complete: @escaping DownloadComplete) {
+    func getUserData() {
 
         DataService.ds.REF_USERS.child(userID!).observeSingleEvent(of: .value, with: { (user) in
-            self.userData = (user.value as? [String:Any])!
-            print("Getting Data")
-            complete()
+            self.userData = user.value as! [String:Any]
+            
+            self.updateMainScreen()
+            _ = self.navigationController?.popViewController(animated: true)
         })
     }
 }
