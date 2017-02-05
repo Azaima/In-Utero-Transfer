@@ -29,7 +29,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     var mainVC = MainVC()
     let roles = ["", "Admin", "Neonatologist", "Obstetrician"]
     var userID: String?
-    var userData = [String:String]()
+    var userData = [String:Any]()
     var successfulRegistration = false
     
     var hospitals = [""]
@@ -203,9 +203,9 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
         
         loggedInUserID = userID
         loggedInUserData = userData
-        if userData["hospital"] != "" {
+        if userData["hospital"] as? String != "" {
             loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                return HospitalStruct.name == userData["hospital"]!
+                return HospitalStruct.name == userData["hospital"] as! String
             })!]
             self.mainVC.userLabel.text = "\((self.mainVC.userLabel.text)!)\nUser is linked to \((loggedInUserHospital?.name)!)"
         }
@@ -215,7 +215,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     func getUserData(complete: @escaping DownloadComplete) {
 
         DataService.ds.REF_USERS.child(userID!).observeSingleEvent(of: .value, with: { (user) in
-            self.userData = user.value as! [String:String]
+            self.userData = (user.value as? [String:Any])!
             print("Getting Data")
             complete()
         })

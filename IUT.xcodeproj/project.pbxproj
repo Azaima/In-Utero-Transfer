@@ -20,6 +20,8 @@
 		E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C51E40CEAC000634AD /* SignInVC.swift */; };
 		E70B32C81E410F57000634AD /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C71E410F57000634AD /* DataService.swift */; };
 		E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C91E411EC4000634AD /* HospitalStruct.swift */; };
+		E749AEBF1E4759AE007AB3A1 /* UsersTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */; };
+		E76CD6F41E472987005E9D5E /* ReviewUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */; };
 		E79E2D341E460B0500786358 /* FeedbackVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D331E460B0500786358 /* FeedbackVC.swift */; };
 		E79E2D361E46274300786358 /* AdministrativeToolsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */; };
 		E79E2D381E4631EB00786358 /* HospitalsDatabaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D371E4631EB00786358 /* HospitalsDatabaseVC.swift */; };
@@ -43,6 +45,8 @@
 		E70B32C51E40CEAC000634AD /* SignInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
 		E70B32C71E410F57000634AD /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		E70B32C91E411EC4000634AD /* HospitalStruct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalStruct.swift; sourceTree = "<group>"; };
+		E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersTableVC.swift; sourceTree = "<group>"; };
+		E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewUserVC.swift; sourceTree = "<group>"; };
 		E79E2D331E460B0500786358 /* FeedbackVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackVC.swift; sourceTree = "<group>"; };
 		E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdministrativeToolsVC.swift; sourceTree = "<group>"; };
 		E79E2D371E4631EB00786358 /* HospitalsDatabaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalsDatabaseVC.swift; sourceTree = "<group>"; };
@@ -121,6 +125,8 @@
 				E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */,
 				E79E2D371E4631EB00786358 /* HospitalsDatabaseVC.swift */,
 				E79E2D391E46604700786358 /* HospitalDetailsVC.swift */,
+				E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */,
+				E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -272,11 +278,13 @@
 			files = (
 				E79E2D361E46274300786358 /* AdministrativeToolsVC.swift in Sources */,
 				E79E2D3A1E46604700786358 /* HospitalDetailsVC.swift in Sources */,
+				E749AEBF1E4759AE007AB3A1 /* UsersTableVC.swift in Sources */,
 				E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */,
 				E79E2D381E4631EB00786358 /* HospitalsDatabaseVC.swift in Sources */,
 				E70B32C41E40C1B6000634AD /* Constants.swift in Sources */,
 				E70B32C81E410F57000634AD /* DataService.swift in Sources */,
 				E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */,
+				E76CD6F41E472987005E9D5E /* ReviewUserVC.swift in Sources */,
 				E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */,
 				E79E2D341E460B0500786358 /* FeedbackVC.swift in Sources */,
 				E70B32AA1E3EEAD3000634AD /* MainVC.swift in Sources */,

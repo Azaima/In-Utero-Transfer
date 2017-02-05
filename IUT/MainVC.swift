@@ -52,13 +52,13 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
             
             loggedInUserID = userID
             
-            DataService.ds.REF_USERS.child(userID).observeSingleEvent(of: .value, with: { (user) in
+            DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
                 
-                loggedInUserData = user.value as? [String: String]
+                loggedInUserData = user.value as? [String: Any]
                 self.toggleSignInButton(signedIn: true, userData: loggedInUserData)
                 
-                if loggedInUserData?["hospital"] != nil && loggedInUserData?["hospital"] != "" {
-                    let hospitalName = (loggedInUserData?["hospital"])!
+                if loggedInUserData?["hospital"] != nil && loggedInUserData?["hospital"] as? String != "" {
+                    let hospitalName = loggedInUserData?["hospital"] as! String
                     
                     loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
                         return HospitalStruct.name! == hospitalName
@@ -105,12 +105,12 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
             }
             
             print("Ahmed: And I have \(hospitalsArray.count) hospitals")
-            if loggedInUserData?["hospital"] != "" && loggedInUserData?["hospital"] != nil {
-                print(loggedInUserData?["hospital"])
+            if loggedInUserData?["hospital"] as? String != "" && loggedInUserData?["hospital"] != nil {
+                
                 loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                    return HospitalStruct.name == loggedInUserData?["hospital"]
+                    return HospitalStruct.name == loggedInUserData?["hospital"] as? String
                 })!]
-                print(loggedInUserHospital?.name)
+                
             }
             
             sortHospitalsToNetworksAndLevels()
@@ -136,7 +136,7 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
         performSegue(withIdentifier: "SignInVC", sender: register)
     }
     
-    func toggleSignInButton(signedIn: Bool, userData: [String:String]?) {
+    func toggleSignInButton(signedIn: Bool, userData: [String:Any]?) {
         
         signInButton.isHidden = signedIn
         registerButton.isHidden = signedIn
@@ -144,11 +144,11 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
         if signedIn {
             userLabel.text = "Currently Logged in as - \((userData?["firstName"])!) \((userData?["surname"])!)"
             feedbackButton.isHidden = false
-            if userData?["updateStatus"] != nil {
+            if userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
                 updateStatusButton.isHidden = false
             }
             
-            if userData?["administrativeRights"] != nil {
+            if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
                 administrativeToolsButton.isHidden = false
             }
         }   else {

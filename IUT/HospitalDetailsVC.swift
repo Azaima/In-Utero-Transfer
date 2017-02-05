@@ -124,7 +124,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch pickerView {
         case networkPicker:
-            return networks[row]
+            return networksForHeaders[row]
         default:
             return "\(row + 1)"
         }
@@ -142,7 +142,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             "network": networks[networkPicker.selectedRow(inComponent: 0)],
             "nicu": nicuView.text!,
             "nicuCoordinator": nicuCoordinatorView.text,
-            "subspecialty": subspecialityField.text,
+            "subspecialty": subspecialityField.text!,
             "switchBoard": switchboardView.text!,
             "lastUpdated": formatter.string(from: date),
             "updatedBy": loggedInUserID!] as [String: Any]

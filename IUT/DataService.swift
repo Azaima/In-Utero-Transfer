@@ -20,6 +20,7 @@ class DataService {
     private var _REF_HOSPITALS = DB_BASE.child("Hospitals")
     private var _REF_HOSPITALS_ARCHIVE = DB_BASE.child("hospitalArchive")
     private var _REF_USERS = DB_BASE.child("users")
+    private var _REF_NEWUSER = DB_BASE.child("newUsers")
     
     private var _REF_FEEDBACK = DB_BASE.child("feedback")
     private var _REF_FEEDBACK_ARCHIVE = DB_BASE.child("feedbackArchive")
@@ -37,6 +38,10 @@ class DataService {
         return _REF_USERS
     }
     
+    var REF_NEWUSER: FIRDatabaseReference {
+        return _REF_NEWUSER
+    }
+    
     var REF_FEEDBACK: FIRDatabaseReference {
         return _REF_FEEDBACK
     }
@@ -47,8 +52,16 @@ class DataService {
     
     
     
-    func createFireBaseDBUser(uid: String, userData: [String: String]) {
+    func createFireBaseDBUser(uid: String, userData: [String: Any]) {
         REF_USERS.child(uid).updateChildValues(userData)
+        REF_NEWUSER.child(uid).setValue(userData["hospital"]!)
+    }
+    
+    func updateUserProfile(uid: String, userData: [String: Any], wasNew: Bool) {
+        REF_USERS.child(uid).updateChildValues(userData)
+        if wasNew {
+            REF_NEWUSER.child(uid).removeValue()
+        }
     }
     
     func createFeedbackMessage(hospital: String, userID: String, title: String, body: String) {

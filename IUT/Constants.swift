@@ -33,12 +33,13 @@ var currentLocation: CLLocation!
 var selectedHospital: HospitalStruct?
 var currentNetwork: Int?
 let networks = ["North Central & East London Neonatal", "North West London Neonatal", "South London Neonatal"]
+let networksForHeaders = ["North Central & East", "North West", "South"]
 
 
 let USER_UID = "uid"
 
 var loggedInUserID: String?
-var loggedInUserData: [String:String]?
+var loggedInUserData: [String:Any]?
 var loggedInUserHospital: HospitalStruct?
 
 func sortHospitalsToNetworksAndLevels() {
