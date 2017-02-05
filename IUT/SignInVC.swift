@@ -26,7 +26,12 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     @IBOutlet weak var errorLabel: UILabel!
     
     var register = false
+    var mainVC = MainVC()
     let roles = ["", "Admin", "Neonatologist", "Obstetrician"]
+    var userID: String?
+    var userData = [String:String]()
+    var successfulRegistration = false
+    
     var hospitals = [""]
     var fields = [UITextField]()
     
@@ -96,23 +101,45 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
                         return
                     }
                     
+                    
+                    
                     print("Ahmed: Successfully signed in")
+                    self.userID = user?.uid
+                    self.getUserData {
+                        self.updateMainScreen()
+                        _ = self.navigationController?.popViewController(animated: true)
+                    }
                 })
             }
         case true:
-            if checkFields() {
-                if let email = emailField.text, let password = passwordField.text {
-                    FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
-                        guard error == nil else {
-                            self.errorLabel.text = (error?.localizedDescription)!
-                            return
-                        }
-                        
-                        let userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)], "hospital": hospitalsArray[self.hospitalPicker.selectedRow(inComponent: 0)].name]
-                        
-                        self.completeSignin(id: (user?.uid)!, userData: userData as! [String : String])
-                        
-                    })
+            if successfulRegistration {
+                _ = self.navigationController?.popViewController(animated: true)
+            }   else {
+                if checkFields() {
+                    if let email = emailField.text, let password = passwordField.text {
+                        FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
+                            guard error == nil else {
+                                self.errorLabel.text = (error?.localizedDescription)!
+                                return
+                            }
+                            self.userID = user?.uid
+                            self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)], "hospital": hospitalsArray[self.hospitalPicker.selectedRow(inComponent: 0)].name, "email":email]
+                            
+                            DataService.ds.createFireBaseDBUser(uid: (user?.uid)!, userData: self.userData)
+                            self.updateMainScreen()
+                            self.signInButton.setTitle("Done", for: .normal)
+                            self.signInButton.backgroundColor = UIColor(red: 0, green: 230/255, blue: 118/255, alpha: 1)
+
+                            for field in self.fields {
+                                field.isUserInteractionEnabled = false
+                            }
+                            self.rolePicker.isUserInteractionEnabled = false
+                            self.hospitalPicker.isUserInteractionEnabled = false
+                            
+                            self.errorLabel.text = "Welcome to IUT App.\nYour registration was successfully completed.\nYour local admin team will review your registration and manage your App entitlements."
+                            self.successfulRegistration = true
+                        })
+                    }
                 }
             }
             
@@ -128,7 +155,11 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
                 return false
             }
         }
-        
+        if (passwordField.text?.characters.count)! < 6 {
+            passwordField.backgroundColor = UIColor(red: 1, green: 205/255, blue: 210/255, alpha: 1)
+            errorLabel.text = "Password must have at least 6 characters"
+            return false
+        }
         if passwordField.text != confirmPasswordField.text {
             confirmPasswordField.text = ""
             confirmPasswordField.backgroundColor = UIColor(red: 1, green: 205/255, blue: 210/255, alpha: 1)
@@ -149,10 +180,44 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
         return true
     }
     
-    func completeSignin(id: String, userData: [String:String]) {
-        DataService.ds.createFireBaseDBUser(uid: id, userData: userData)
-        KeychainWrapper.standard.set(id, forKey: USER_UID)
+    func successfullySignedIn() {
         
+        if userData.isEmpty {
+            getUserData {
+                print("Ahmed: Successfully obtained data")
+                self.updateMainScreen()
+                _ = self.navigationController?.popViewController(animated: true)
+
+            }
+        }   else {
+            self.updateMainScreen()
+            
+        }
         
+    }
+    
+    func updateMainScreen() {
+        self.mainVC.toggleSignInButton(signedIn: true, userData: userData)
+        
+        KeychainWrapper.standard.set(userID!, forKey: USER_UID)
+        
+        loggedInUserID = userID
+        loggedInUserData = userData
+        if userData["hospital"] != "" {
+            loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                return HospitalStruct.name == userData["hospital"]!
+            })!]
+            self.mainVC.userLabel.text = "\((self.mainVC.userLabel.text)!)\nUser is linked to \((loggedInUserHospital?.name)!)"
+        }
+
+    }
+    
+    func getUserData(complete: @escaping DownloadComplete) {
+
+        DataService.ds.REF_USERS.child(userID!).observeSingleEvent(of: .value, with: { (user) in
+            self.userData = user.value as! [String:String]
+            print("Getting Data")
+            complete()
+        })
     }
 }
