@@ -24,6 +24,7 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var updateStatusButton: UIButton!
     @IBOutlet weak var administrativeToolsButton: UIButton!
     var functionButtons = [UIButton]()
+    @IBOutlet weak var cotStatusLabel: UILabel!
     
     var locationManager = CLLocationManager()
     var myLocation: CLLocation? {
@@ -51,15 +52,15 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
 //        _ = KeychainWrapper.standard.removeAllKeys()
         if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
         
-            let hospital = KeychainWrapper.standard.string(forKey: "hospital")
+            
             
             loggedInUserID = userID
             
             DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
                 
                 loggedInUserData = user.value as? [String: Any]
-                loggedInUserData?["hospital"] = hospital!
-                self.toggleSignInButton(signedIn: true, hospital: hospital! ,userData: loggedInUserData)
+                
+                self.toggleSignInButton(signedIn: true, hospital: loggedInUserData?["hospital"] as! String ,userData: loggedInUserData)
             })
         }
     }
@@ -113,6 +114,18 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
             destination.register = sender as! Bool
             destination.mainVC = self
         }
+        if segue.identifier == "databaseForStatusUpdate"{
+            
+            let destination = segue.destination as! HospitalsDatabaseVC
+            destination.updatingCotStatus = true
+        }
+        
+        if segue.identifier == "detailsForStatusUpdate" {
+            let destination = segue.destination as! HospitalDetailsVC
+            destination.updatingCotStatus = true
+            destination.hospital = loggedInUserHospital
+        }
+        
     }
 
     @IBAction func signinPressed(_ sender: UIButton) {
@@ -125,7 +138,12 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
         signInButton.isHidden = signedIn
         registerButton.isHidden = signedIn
         signOutButton.isHidden = !signedIn
+        loggedIn = signedIn
+        
         if signedIn {
+            loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                return HospitalStruct.name == hospital
+            })!]
             userLabel.text = "Currently Logged in as - \((userData?["firstName"])!) \((userData?["surname"])!)"
             if hospital != "(None)" {
                 userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(hospital)"
@@ -133,16 +151,30 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
             feedbackButton.isHidden = false
             if userData?["hospital"] as! String != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
                 updateStatusButton.isHidden = false
+                
+                if hospital != "(None)" && hospital != "E B S" {
+                    cotStatusLabel.isHidden = false
+                    if loggedInUserHospital?.cotsAvailable != nil {
+                        cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
+                    }   else {
+                        cotStatusLabel.text = "Your cot status has never been updated"
+                    }
+                    
+                }
             }
             
             if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
                 administrativeToolsButton.isHidden = false
             }
+            
+            
+            
         }   else {
             userLabel.text = "Currently Logged in as - Guest User"
             for button in functionButtons {
                 button.isHidden = true
             }
+            cotStatusLabel.isHidden = true
         }
     }
     
@@ -160,6 +192,19 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
     }
     @IBAction func adminToolsPressed(_ sender: UIButton) {
         performSegue(withIdentifier: "AdministrativeToolsVC", sender: nil)
+    }
+    
+    @IBAction func arrangeTransferPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "SourceOfTransferVC", sender: nil)
+    }
+    
+    
+    @IBAction func statusUpdatePressed(_ sender: Any) {
+        if loggedInUserHospital?.name == "E B S" {
+            performSegue(withIdentifier: "databaseForStatusUpdate", sender: nil)
+        }   else {
+            performSegue(withIdentifier: "detailsForStatusUpdate", sender: nil)
+        }
     }
 }
 

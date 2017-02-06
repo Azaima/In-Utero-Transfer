@@ -12,6 +12,8 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
 
     var newHospital = false
     var hospital: HospitalStruct?
+    var updatingCotStatus = false
+    var viewOnlyMode = false
     
     @IBOutlet weak var navigationBar: UINavigationItem!
     @IBOutlet weak var hospitalNameStack: UIStackView!
@@ -28,33 +30,70 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     @IBOutlet weak var nicuView: UITextView!
     @IBOutlet weak var nicuCoordinatorView: UITextView!
     
+    @IBOutlet weak var cotsStack: UIStackView!
+    @IBOutlet weak var currentCotsLabel: UILabel!
+    @IBOutlet weak var availableCotsField: UITextField!
+    @IBOutlet weak var hospitalDetailsStack: UIStackView!
+    
+    @IBOutlet weak var doneButton: UIBarButtonItem!
+    
     var fields = [UITextField]()
     var textViews = [UITextView]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        fields = [nameField, latitudeField, longitudeField]
-        textViews = [addressTextView, switchboardView, labourWardView, nicuView]
-        
         networkPicker.delegate = self
         networkPicker.dataSource = self
         levelPicker.delegate = self
         levelPicker.dataSource = self
+
+        fields = [nameField, latitudeField, longitudeField]
+        textViews = [addressTextView, switchboardView, labourWardView, nicuView]
+        var title = ""
         
-        var title: String
-        if newHospital {
-            title = "Adding a new hospital"
-            
-        }   else {
-            title = "Editing \((hospital?.name)!)"
+        
+        if viewOnlyMode {
+            title = (hospital?.name)!
             setupFields()
+            setupForViewOnly()
+            removeBackButton(self, title: nil)
+        }   else {
+            cotsStack.isHidden = !updatingCotStatus
+            hospitalDetailsStack.isHidden = updatingCotStatus
+            
+            
+            
+            
+            if newHospital {
+                title = "Adding a new hospital"
+                
+            }   else {
+                title = "Editing \((hospital?.name)!)"
+                setupFields()
+            }
+            removeBackButton(self, title: "Cancel")
         }
+        
         navigationBar.title = title
-        removeBackButton(self, title: "Cancel")
+        
         
     }
 
+    func setupForViewOnly(){
+        doneButton.isEnabled = false
+        availableCotsField.isHidden = true
+        hospitalNameStack.isHidden = true
+        networkPicker.isUserInteractionEnabled = false
+        levelPicker.isUserInteractionEnabled = false
+        subspecialityField.isUserInteractionEnabled = false
+        geolocationStack.isHidden = true
+        switchboardView.isEditable = false
+        labourWardView.isEditable = false
+        nicuView.isEditable = false
+        nicuCoordinatorView.isEditable = false
+    }
+    
     func setupFields() {
         hospitalNameStack.isHidden = true
         nameField.text = hospital?.name!
@@ -68,6 +107,9 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         labourWardView.text = hospital?.labourWard!
         nicuView.text = hospital?.nicuNumber!
         nicuCoordinatorView.text = hospital?.nicuCoordinator
+        if hospital?.cotsAvailable != nil {
+            currentCotsLabel.text = "\((hospital?.cotsAvailable)!) cots on \((hospital?.cotsUpdate)!)"
+        }
     }
     
     func checkFields() -> Bool {
@@ -131,25 +173,33 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     @IBAction func donePressed(_ sender: UIBarButtonItem) {
-        if checkFields() {
-            formatter.dateFormat = "dd-MM-yy HH:mm"
+        if !updatingCotStatus {
+            if checkFields() {
+                formatter.dateFormat = "dd-MM-yy HH:mm"
+                
+                let hospitalData = [
+                "address": addressTextView.text!,
+                "labourWard": labourWardView.text!,
+                "level": levelPicker.selectedRow(inComponent: 0) + 1,
+                "location": ["latitude": Double(latitudeField.text!), "longitude": Double(longitudeField.text!)],
+                "network": networks[networkPicker.selectedRow(inComponent: 0)],
+                "nicu": nicuView.text!,
+                "nicuCoordinator": nicuCoordinatorView.text,
+                "subspecialty": subspecialityField.text!,
+                "switchBoard": switchboardView.text!,
+                "lastUpdated": formatter.string(from: date),
+                "updatedBy": loggedInUserID!] as [String: Any]
+                
+                DataService.ds.createHospitalEntry(name: nameField.text!, hospitalData: hospitalData)
+                
+                _ = navigationController?.popViewController(animated: true)
+            }
+        }   else {
             
-            let hospitalData = [
-            "address": addressTextView.text!,
-            "labourWard": labourWardView.text!,
-            "level": levelPicker.selectedRow(inComponent: 0) + 1,
-            "location": ["latitude": Double(latitudeField.text!), "longitude": Double(longitudeField.text!)],
-            "network": networks[networkPicker.selectedRow(inComponent: 0)],
-            "nicu": nicuView.text!,
-            "nicuCoordinator": nicuCoordinatorView.text,
-            "subspecialty": subspecialityField.text!,
-            "switchBoard": switchboardView.text!,
-            "lastUpdated": formatter.string(from: date),
-            "updatedBy": loggedInUserID!] as [String: Any]
-            
-            DataService.ds.createHospitalEntry(name: nameField.text!, hospitalData: hospitalData)
-            
-            _ = navigationController?.popViewController(animated: true)
+            if let cots = Int(availableCotsField.text!) {
+                DataService.ds.updateCotStatus(hospital: (hospital?.name)!, cots: cots)
+                _ = navigationController?.popViewController(animated: true)
+            }
         }
     }
     

@@ -11,8 +11,10 @@ import UIKit
 class HospitalsDatabaseVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     
+    @IBOutlet weak var newHospitalButton: UIBarButtonItem!
     @IBOutlet weak var hospitalsTable: UITableView!
     
+    var updatingCotStatus = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +22,8 @@ class HospitalsDatabaseVC: UIViewController, UITableViewDelegate, UITableViewDat
         removeBackButton(self, title: nil)
         hospitalsTable.delegate = self
         hospitalsTable.dataSource = self
+        
+        newHospitalButton.isEnabled = !updatingCotStatus
         
         DataService.ds.REF_HOSPITALS.observe(.value, with: { (snapShot) in
             self.hospitalsTable.reloadData()
@@ -67,6 +71,7 @@ class HospitalsDatabaseVC: UIViewController, UITableViewDelegate, UITableViewDat
         }   else {
             destination.hospital = sender as? HospitalStruct
         }
+        destination.updatingCotStatus = updatingCotStatus
     }
    
 

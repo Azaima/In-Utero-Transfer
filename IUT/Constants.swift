@@ -21,6 +21,7 @@ func removeBackButton (_ viewController: UIViewController, title: String?) {
 let date = Date()
 let formatter = DateFormatter()
 
+var loggedIn = false
 
 typealias DownloadComplete = () -> ()
 
@@ -38,19 +39,20 @@ var selectedHospital: HospitalStruct?
 var currentNetwork: Int?
 let networks = ["North Central & East London Neonatal", "North West London Neonatal", "South London Neonatal"]
 let networksForHeaders = ["North Central & East", "North West", "South"]
-
+var hospitalsListing = [HospitalStruct]()
 
 let USER_UID = "uid"
 
 var loggedInUserID: String?
 var loggedInUserData: [String:Any]?
-//var loggedInUserHospital: HospitalStruct?
+var loggedInUserHospital: HospitalStruct?
 
 func sortHospitalsToNetworksAndLevels() {
     
     var hospitalsListed = hospitalsArray
     
     hospitalsListed.removeFirst(2)
+    hospitalsListing = hospitalsListed
     print("Started sorting")
     
     var sortedHospitals = Array(repeating: Array(repeatElement([HospitalStruct](), count: 3)), count: 3)

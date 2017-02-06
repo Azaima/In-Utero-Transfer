@@ -24,6 +24,8 @@ class HospitalStruct {
     let switchBoard: String!
     let nicuNumber: String!
     var nicuCoordinator = ""
+    var cotsAvailable: Int?
+    var cotsUpdate: String?
     
     init (name: String, address: String, location: CLLocation, network: String, level: Int, distanceFromMe: Double, subspecialty: String?, switchBoard: String,  nicuNumber: String, nicuCoordinator: String?, labourWard: String ){
         
@@ -60,6 +62,10 @@ class HospitalStruct {
             self.subspecialty = hospitalDetails["subspecialty"] as! String
         }
         self.distanceFromMe = currentLocation.distance(from: hospitalLoc)
+        if hospitalDetails["cotStatus"] != nil {
+            self.cotsAvailable = (hospitalDetails["cotStatus"] as! [String:Any])["cotsAvailable"] as? Int
+            self.cotsUpdate = (hospitalDetails["cotStatus"] as! [String:Any])["update"] as? String
+        }
     }
     
 }

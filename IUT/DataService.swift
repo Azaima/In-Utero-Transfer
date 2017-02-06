@@ -21,6 +21,7 @@ class DataService {
     private var _REF_HOSPITALS_ARCHIVE = DB_BASE.child("hospitalArchive")
     private var _REF_USERS = DB_BASE.child("users")
     private var _REF_USER_BYHOSPITAL = DB_BASE.child("userByHospital")
+    private var _REF_COT_STATUS_ARCHIVE = DB_BASE.child("cotStatusArchive")
     
     private var _REF_FEEDBACK = DB_BASE.child("feedback")
     private var _REF_FEEDBACK_ARCHIVE = DB_BASE.child("feedbackArchive")
@@ -32,6 +33,10 @@ class DataService {
     
     var REF_HOSPITALS_ARCHIVE: FIRDatabaseReference {
         return _REF_HOSPITALS_ARCHIVE
+    }
+    
+    var REF_COT_STATUS_ARCHIVE: FIRDatabaseReference {
+        return _REF_COT_STATUS_ARCHIVE
     }
     
     var REF_USERS: FIRDatabaseReference {
@@ -96,6 +101,19 @@ class DataService {
     func archiveFeedback( title: String, message: [String: Any]){
         REF_FEEDBACK_ARCHIVE.child(loggedInUserData?["hospital"] as! String).child(title).updateChildValues(message)
         REF_FEEDBACK.child(loggedInUserData?["hospital"] as! String).child(title).removeValue()
+    }
+    
+    func updateCotStatus(hospital: String, cots: Int){
+        REF_HOSPITALS.child(hospital).child("cotStatus").observeSingleEvent(of: .value, with: { (statusSnapshot) in
+            if var previousStatus = statusSnapshot.value as? [String: Any] {
+                let key = previousStatus["update"] as! String
+                previousStatus["update"] = nil
+                self.REF_COT_STATUS_ARCHIVE.child(hospital).child(key).updateChildValues(previousStatus)
+            }
+            formatter.dateFormat = "dd-MM-yy HH:mm"
+            let newStatus = ["cotsAvailable": cots, "update": formatter.string(from: date), "updateBy": loggedInUserID! ] as [String : Any]
+            self.REF_HOSPITALS.child(hospital).child("cotStatus").updateChildValues(newStatus)
+        })
     }
     
 }
