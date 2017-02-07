@@ -60,7 +60,8 @@ class DataService {
     func createFireBaseDBUser(uid: String, hospital: String, userData: [String: Any]) {
         
         REF_USERS.child(uid).updateChildValues(userData)
-        REF_USER_BYHOSPITAL.child(hospital).updateChildValues([uid: userData["email"]!])
+        
+        REF_USER_BYHOSPITAL.child(hospital).updateChildValues([uid: ["name": "\((userData["firstName"])!) \((userData["surname"])!)", "newUser": "true"]])
         
     }
     
@@ -69,6 +70,9 @@ class DataService {
         if wasNew {
             REF_USERS.child(uid).child("newUser").removeValue()
         }
+        
+        REF_USER_BYHOSPITAL.child(loggedHospitalName!).child(uid).updateChildValues((userData["entitlementsReviewed"] as! [String: Any]))
+        REF_USER_BYHOSPITAL.child(loggedHospitalName!).child(uid).updateChildValues(["newUser": "false"])
     }
     
     func createFeedbackMessage(hospital: String, userID: String, title: String, body: String) {

@@ -38,8 +38,11 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    var firstStartup = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        mainscreen = self
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
@@ -50,18 +53,19 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
 //        _ = KeychainWrapper.standard.removeAllKeys()
-        if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
-        
+        if firstStartup {
+            firstStartup = false
+            if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
             
-            
-            loggedInUserID = userID
-            
-            DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
+                loggedInUserID = userID
                 
-                loggedInUserData = user.value as? [String: Any]
-                
-                self.toggleSignInButton(signedIn: true, hospital: loggedInUserData?["hospital"] as! String ,userData: loggedInUserData)
-            })
+                DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
+                    
+                    loggedInUserData = user.value as? [String: Any]
+                    
+                    self.toggleSignInButton(signedIn: true, userData: loggedInUserData)
+                })
+            }
         }
     }
 
@@ -88,25 +92,19 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
                 
                 for snap in snapshot {
                     let hospital = HospitalStruct(hospitalSnap: snap)
+                    if hospital.name == loggedHospitalName {
+                        loggedInUserHospital = hospital
+                    }
                     hospitalsArray.append(hospital)
                 }
             }
-            
-            
-            
-//            loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-//                return HospitalStruct.name == loggedInUserData?["hospital"] as? String
-//            })!]
-            
             sortHospitalsToNetworksAndLevels()
             
             complete()
 
         })
         
-        
     }
-    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "SignInVC" {
@@ -129,38 +127,47 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
     }
 
     @IBAction func signinPressed(_ sender: UIButton) {
-        let register = sender.tag == 1 ? true : false
+
+        let register = sender.tag == 1
         performSegue(withIdentifier: "SignInVC", sender: register)
     }
+
     
-    func toggleSignInButton(signedIn: Bool, hospital: String ,userData: [String:Any]?) {
+    func toggleSignInButton(signedIn: Bool, userData: [String:Any]?) {
         
         signInButton.isHidden = signedIn
         registerButton.isHidden = signedIn
         signOutButton.isHidden = !signedIn
         loggedIn = signedIn
-        
+        if userData != nil {
+            loggedHospitalName = (userData?["hospital"] as! String)
+        }
         if signedIn {
             loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                return HospitalStruct.name == hospital
+                return HospitalStruct.name == loggedHospitalName
             })!]
             userLabel.text = "Currently Logged in as - \((userData?["firstName"])!) \((userData?["surname"])!)"
-            if hospital != "(None)" {
-                userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(hospital)"
+            if loggedHospitalName != "(None)" {
+                userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(loggedHospitalName!)"
             }
             feedbackButton.isHidden = false
             if userData?["hospital"] as! String != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
                 updateStatusButton.isHidden = false
                 
-                if hospital != "(None)" && hospital != "E B S" {
+                if loggedHospitalName != nil && loggedHospitalName != "(None)" && loggedHospitalName != "E B S" {
                     cotStatusLabel.isHidden = false
-                    if loggedInUserHospital?.cotsAvailable != nil {
+                    let hospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                        return HospitalStruct.name == loggedHospitalName
+                    })!]
+                    if hospital.cotsAvailable != nil {
                         cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
                     }   else {
                         cotStatusLabel.text = "Your cot status has never been updated"
                     }
                     
                 }
+
+                
             }
             
             if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
@@ -180,10 +187,10 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
     
     @IBAction func signOutPressed(_ sender: UIButton) {
         KeychainWrapper.standard.removeObject(forKey: USER_UID)
-        KeychainWrapper.standard.removeObject(forKey: "hospital")
+        loggedHospitalName = nil
         try! FIRAuth.auth()?.signOut()
         print("Signed Out Successfully")
-        toggleSignInButton(signedIn: false, hospital: "" ,userData: nil)
+        toggleSignInButton(signedIn: false, userData: nil)
         
     }
     

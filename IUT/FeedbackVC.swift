@@ -13,9 +13,15 @@ class FeedbackVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var feedbackText: UITextView!
     
+    var hospitalToFeedback = ""
+    var messageFromTransfer = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        if !messageFromTransfer {
+            hospitalToFeedback = loggedInUserData?["hospital"] as! String
+        }
         removeBackButton(self, title: nil)
         titleField.becomeFirstResponder()
         
@@ -26,7 +32,7 @@ class FeedbackVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     @IBAction func submitPressed(_ sender: Any) {
         if checkFields() {
             
-            DataService.ds.createFeedbackMessage(hospital: (loggedInUserData?["hospital"] as! String), userID: loggedInUserID!, title: titleField.text!, body: feedbackText.text!)
+            DataService.ds.createFeedbackMessage(hospital: (hospitalToFeedback), userID: loggedInUserID!, title: titleField.text!, body: feedbackText.text!)
             _ = navigationController?.popViewController(animated: true)
         }
     }

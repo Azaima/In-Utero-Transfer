@@ -12,6 +12,7 @@ import SwiftKeychainWrapper
 
 class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
 
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     
@@ -39,6 +40,8 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        scrollView.contentSize.height = self.view.frame.height
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         fields = [emailField,passwordField, confirmPasswordField, firstNameField, surnameField]
         for field in fields {
             field.delegate = self
@@ -188,10 +191,10 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     }
     
     func updateMainScreen() {
-        self.mainVC.toggleSignInButton(signedIn: true, hospital: userData["hospital"] as! String ,userData: userData)
+        mainscreen?.toggleSignInButton(signedIn: true, userData: userData)
         
         KeychainWrapper.standard.set(userID!, forKey: USER_UID)
-        KeychainWrapper.standard.set(userData["hospital"] as! String, forKey: "hospital")
+        
         
         loggedInUserID = userID
         loggedInUserData = userData

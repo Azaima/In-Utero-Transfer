@@ -15,6 +15,8 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     var updatingCotStatus = false
     var viewOnlyMode = false
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var fullStack: UIStackView!
     @IBOutlet weak var navigationBar: UINavigationItem!
     @IBOutlet weak var hospitalNameStack: UIStackView!
     @IBOutlet weak var nameField: UITextField!
@@ -76,12 +78,18 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         }
         
         navigationBar.title = title
+        scrollView.contentSize.height = fullStack.frame.height + 250
         
         
     }
 
     func setupForViewOnly(){
-        doneButton.isEnabled = false
+        doneButton.title = "FeedBack"
+        if loggedHospitalName == nil {
+            doneButton.isEnabled = false
+        } else {
+            doneButton.isEnabled = true
+        }
         availableCotsField.isHidden = true
         hospitalNameStack.isHidden = true
         networkPicker.isUserInteractionEnabled = false
@@ -173,44 +181,48 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     @IBAction func donePressed(_ sender: UIBarButtonItem) {
-        if !updatingCotStatus {
-            if checkFields() {
-                formatter.dateFormat = "dd-MM-yy HH:mm"
-                
-                let hospitalData = [
-                "address": addressTextView.text!,
-                "labourWard": labourWardView.text!,
-                "level": levelPicker.selectedRow(inComponent: 0) + 1,
-                "location": ["latitude": Double(latitudeField.text!), "longitude": Double(longitudeField.text!)],
-                "network": networks[networkPicker.selectedRow(inComponent: 0)],
-                "nicu": nicuView.text!,
-                "nicuCoordinator": nicuCoordinatorView.text,
-                "subspecialty": subspecialityField.text!,
-                "switchBoard": switchboardView.text!,
-                "lastUpdated": formatter.string(from: date),
-                "updatedBy": loggedInUserID!] as [String: Any]
-                
-                DataService.ds.createHospitalEntry(name: nameField.text!, hospitalData: hospitalData)
-                
-                _ = navigationController?.popViewController(animated: true)
-            }
+        if viewOnlyMode {
+            performSegue(withIdentifier: "feedbackFromTransfer", sender: nil)
         }   else {
-            
-            if let cots = Int(availableCotsField.text!) {
-                DataService.ds.updateCotStatus(hospital: (hospital?.name)!, cots: cots)
-                _ = navigationController?.popViewController(animated: true)
+            if !updatingCotStatus {
+                if checkFields() {
+                    formatter.dateFormat = "dd-MM-yy HH:mm"
+                    
+                    let hospitalData = [
+                    "address": addressTextView.text!,
+                    "labourWard": labourWardView.text!,
+                    "level": levelPicker.selectedRow(inComponent: 0) + 1,
+                    "location": ["latitude": Double(latitudeField.text!), "longitude": Double(longitudeField.text!)],
+                    "network": networks[networkPicker.selectedRow(inComponent: 0)],
+                    "nicu": nicuView.text!,
+                    "nicuCoordinator": nicuCoordinatorView.text,
+                    "subspecialty": subspecialityField.text!,
+                    "switchBoard": switchboardView.text!,
+                    "lastUpdated": formatter.string(from: date),
+                    "updatedBy": loggedInUserID!] as [String: Any]
+                    
+                    DataService.ds.createHospitalEntry(name: nameField.text!, hospitalData: hospitalData)
+                    
+                    _ = navigationController?.popViewController(animated: true)
+                }
+            }   else {
+                
+                if let cots = Int(availableCotsField.text!) {
+                    DataService.ds.updateCotStatus(hospital: (hospital?.name)!, cots: cots)
+                    _ = navigationController?.popViewController(animated: true)
+                }
             }
         }
     }
     
-    /*
+   
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let destination = segue.destination as! FeedbackVC
+        destination.hospitalToFeedback = (hospital?.name!)!
+        destination.messageFromTransfer = true
     }
-    */
+    
 
 }

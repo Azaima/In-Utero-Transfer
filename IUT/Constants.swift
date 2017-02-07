@@ -43,9 +43,31 @@ var hospitalsListing = [HospitalStruct]()
 
 let USER_UID = "uid"
 
+var mainscreen: MainVC?
+
 var loggedInUserID: String?
 var loggedInUserData: [String:Any]?
-var loggedInUserHospital: HospitalStruct?
+var loggedInUserHospital: HospitalStruct? {
+    didSet{
+        if mainscreen !== nil {
+            
+            if loggedInUserHospital?.name != "(None)" && loggedInUserHospital?.name != "E B S" {
+                mainscreen?.cotStatusLabel.isHidden = false
+                
+                if loggedInUserHospital?.cotsAvailable != nil {
+                    
+                    mainscreen?.cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
+                }   else {
+                    mainscreen?.cotStatusLabel.text = "Your cot status has never been updated"
+                }
+                
+            }
+        }
+    }
+}
+
+
+var loggedHospitalName: String?
 
 func sortHospitalsToNetworksAndLevels() {
     
@@ -57,18 +79,10 @@ func sortHospitalsToNetworksAndLevels() {
     
     var sortedHospitals = Array(repeating: Array(repeatElement([HospitalStruct](), count: 3)), count: 3)
     for hospital in hospitalsListed {
-        print(hospital.name)
+        
         sortedHospitals[networks.index(of: hospital.network)!][hospital.level - 1].append(hospital)
     }
     sortedHospitalsArray = sortedHospitals
     
-    for (index,network) in sortedHospitalsArray.enumerated() {
-        print("\(networks[index])")
-        for (levelIndex,level) in network.enumerated() {
-            print("Level \(levelIndex + 1)")
-            for hospital in level {
-                print(hospital.name)
-            }
-        }
-    }
+    
 }

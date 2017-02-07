@@ -31,32 +31,49 @@ class ReviewUserVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSour
     
     var switches = [UISwitch]()
     var newUser = false
+    var selectedUser = [String:Any]()
     var userDict = [String:Any]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getUserData {
+            
         
-        scrollView.contentSize.width = self.view.frame.width - 40
-        removeBackButton(self, title: nil)
-        rolePicker.delegate = self
-        rolePicker.dataSource = self
-        
-        switches = [administrativeSwitch, feedbackSwitch,statusSwitch]
-        setupData()
-        if userDict["userID"] as! String == loggedInUserID!{
-            disablePage("You are not allowed to\nedit your own profile")
-        } else {
-        
-            if userDict["superUser"] as? String == "true" {
-                if loggedInUserData?["superUser"] as? String != "true" {
-                    disablePage("This user profile can ONLY\nbe modified by a Super User")
-                }
+            self.scrollView.contentSize.width = self.view.frame.width - 40
+            removeBackButton(self, title: nil)
+            self.rolePicker.delegate = self
+            self.rolePicker.dataSource = self
+            
+            self.switches = [self.administrativeSwitch, self.feedbackSwitch,self.statusSwitch]
+            self.setupData()
+            if self.userDict["userID"] as! String == loggedInUserID!{
+                self.disablePage("You are not allowed to\nedit your own profile")
             } else {
-                if loggedInUserData?["superUser"] as? String != "true" {
-                    superUserStack.isHidden = true
+            
+                if self.userDict["superUser"] as? String == "true" {
+                    if loggedInUserData?["superUser"] as? String != "true" {
+                        self.disablePage("This user profile can ONLY\nbe modified by a Super User")
+                    }
+                } else {
+                    if loggedInUserData?["superUser"] as? String != "true" {
+                        self.superUserStack.isHidden = true
+                    }
                 }
             }
         }
+    }
+    
+    func getUserData(completed: @escaping DownloadComplete) {
+        DataService.ds.REF_USERS.child(selectedUser["userID"] as! String).observeSingleEvent(of: .value, with: { (userSnapshot) in
+            if let dict = userSnapshot.value as? [String: Any] {
+                self.userDict = dict
+                self.userDict["userID"] = userSnapshot.key
+                print(self.userDict)
+                
+                self.newUser = self.selectedUser["newUser"] as? String == "true"
+            }
+            completed()
+        })
         
     }
     

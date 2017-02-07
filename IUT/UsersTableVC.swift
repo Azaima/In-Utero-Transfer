@@ -43,6 +43,7 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
         searchBar.delegate = self
         
         getCompleteList()
+    
     }
 
     //MARK: Getting the data from Firebase
@@ -50,33 +51,27 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
     func getCompleteList() {
         
         DataService.ds.REF_USER_BYHOSPITAL.child(loggedInUserData?["hospital"] as! String).observe( .value, with: { (hospitalUsersSnapshot) in
-            
+            self.allHospitalUsers = []
             
             let hospitalUsers = hospitalUsersSnapshot.children.allObjects as! [FIRDataSnapshot]
             
             for hospUser in hospitalUsers {
-                DataService.ds.REF_USERS.child(hospUser.key).observe( .value, with: { (snapshot) in
-                    var userData = snapshot.value as! [String: Any]
-                    userData["userID"] = hospUser.key
-                    print(hospUser.key)
-                    
-                    print(userData)
-                    if userData["newUser"] != nil, (userData["newUser"] as! String) == "true" {
-                        self.checkAndAppend(array: &self.newHospitalUsers, userData: userData)
-                        
-                    }   else {
-                        
-                        self.checkAndAppend(array: &self.existingHospitalUsers, userData: userData)
-                    }
-                    
-                    
-                    self.checkAndAppend(array: &self.allHospitalUsers, userData: userData)
-                })
-                
-                
+                var user = hospUser.value as! [String: Any]
+                user["userID"] = hospUser.key
+                self.allHospitalUsers.append(user)
             }
             
+            self.newHospitalUsers = self.allHospitalUsers.filter({ (user: [String : Any]) -> Bool in
+                return user["newUser"] as? String == "true"
+            })
+            
+            self.existingHospitalUsers = self.allHospitalUsers.filter({ (user: [String : Any]) -> Bool in
+                return user["newUser"] as? String != "true"
+            })
+            
+            self.usersTable.reloadData()
         })
+        
     }
     
     func checkAndAppend(array: inout [[String:Any]], userData: [String: Any]) {
@@ -103,11 +98,11 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
         }   else {
             searching = true
             searchingNewUsers = newHospitalUsers.filter({ (user: [String : Any]) -> Bool in
-                return (user["firstName"] as! String).lowercased().contains(searchBar.text!.lowercased()) || (user["surname"] as! String).lowercased().contains(searchBar.text!.lowercased())
+                return (user["name"] as! String).lowercased().contains(searchBar.text!.lowercased())
             })
             
             searchingExistingUsers = existingHospitalUsers.filter({ (user: [String : Any]) -> Bool in
-                return (user["firstName"] as! String).lowercased().contains(searchBar.text!.lowercased()) || (user["surname"] as! String).lowercased().contains(searchBar.text!.lowercased())
+                return (user["name"] as! String).lowercased().contains(searchBar.text!.lowercased())
             })
         }
         
@@ -159,16 +154,16 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
         if searching {
             switch indexPath.section {
             case 0:
-                cell?.textLabel?.text = "\((searchingNewUsers[indexPath.row]["firstName"])!) \((searchingNewUsers[indexPath.row]["surname"])!)"
+                cell?.textLabel?.text = "\((searchingNewUsers[indexPath.row]["name"])!)"
             default:
-                cell?.textLabel?.text = "\((searchingExistingUsers[indexPath.row]["firstName"])!) \((searchingExistingUsers[indexPath.row]["surname"])!)"
+                cell?.textLabel?.text = "\((searchingExistingUsers[indexPath.row]["name"])!)"
             }
         }   else {
             switch indexPath.section {
             case 0:
-                cell?.textLabel?.text = "\((newHospitalUsers[indexPath.row]["firstName"])!) \((newHospitalUsers[indexPath.row]["surname"])!)"
+                cell?.textLabel?.text = "\((newHospitalUsers[indexPath.row]["name"])!)"
             default:
-                cell?.textLabel?.text = "\((existingHospitalUsers[indexPath.row]["firstName"])!) \((existingHospitalUsers[indexPath.row]["surname"])!)"
+                cell?.textLabel?.text = "\((existingHospitalUsers[indexPath.row]["name"])!)"
             }
         }
         
@@ -183,7 +178,7 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
             switch indexPath.section {
             case 0:
                 selectedUser = searchingNewUsers[indexPath.row]
-                newUser = true
+                
             default:
                 selectedUser = searchingExistingUsers[indexPath.row]
             }
@@ -191,7 +186,7 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
             switch indexPath.section {
             case 0:
                 selectedUser = newHospitalUsers[indexPath.row]
-                newUser = true
+                
             default:
                 selectedUser = existingHospitalUsers[indexPath.row]
             }
@@ -207,8 +202,8 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
        
         let destination = segue.destination as! ReviewUserVC
-        destination.userDict = selectedUser
-        destination.newUser = newUser
+        destination.selectedUser = selectedUser
+        
     }
     
 
