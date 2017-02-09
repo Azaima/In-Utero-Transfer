@@ -186,6 +186,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
         })
         hospitalsTable.isHidden = false
         hospitalsTable.reloadData()
+        hospitalsTable.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         
     }
     

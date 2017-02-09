@@ -32,7 +32,10 @@ class FeedbackVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
     @IBAction func submitPressed(_ sender: Any) {
         if checkFields() {
             
-            DataService.ds.createFeedbackMessage(hospital: (hospitalToFeedback), userID: loggedInUserID!, title: titleField.text!, body: feedbackText.text!)
+            let hospital = messageFromTransfer ? (currentHospital?.name)! : loggedHospitalName!
+            
+            
+            DataService.ds.createFeedbackMessage(hospital: (hospitalToFeedback), userID: loggedInUserID!, title: titleField.text!, body: feedbackText.text!, hospitalFrom: hospital)
             _ = navigationController?.popViewController(animated: true)
         }
     }

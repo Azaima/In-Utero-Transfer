@@ -75,12 +75,19 @@ class DataService {
         REF_USER_BYHOSPITAL.child(loggedHospitalName!).child(uid).updateChildValues(["newUser": "false"])
     }
     
-    func createFeedbackMessage(hospital: String, userID: String, title: String, body: String) {
+    func changeUserHospital(oldHospital: String, newHospital: String) {
+        REF_USERS.child(loggedInUserID!).updateChildValues(["hospital": newHospital, "newUser": "true", "superUser": "false", "adminRights": "false", "statusRights": "false" ])
+        
+        REF_USER_BYHOSPITAL.child(oldHospital).child(loggedInUserID!).removeValue()
+        REF_USER_BYHOSPITAL.child(newHospital).child(loggedInUserID!).updateChildValues(["name": "\((loggedInUserData?["firstName"])!) \((loggedInUserData?["surname"])!)", "newUser": "true"])
+    }
+    
+    func createFeedbackMessage(hospital: String, userID: String, title: String, body: String, hospitalFrom: String) {
         formatter.dateFormat = "dd-MM-yy HH:mm"
         let message = [
         "body": body,
         "user": userID,
-        "username": "\(loggedInUserData?["firstName"] as! String) \(loggedInUserData?["surname"] as! String)"]
+        "username": "\(((loggedInUserData?["firstName"] as! String).characters.first)!). \(loggedInUserData?["surname"] as! String) (\(hospitalFrom))"]
         REF_FEEDBACK.child(hospital).child("\(title) - (\(formatter.string(from: date)))").updateChildValues(message)
     }
     
@@ -95,8 +102,6 @@ class DataService {
                 
                 self.REF_HOSPITALS_ARCHIVE.child("\(formatter.string(from: date)) \(name)").updateChildValues(oldHospitalData)
             })
-            
-            
         }
         
         REF_HOSPITALS.child(name).updateChildValues(hospitalData)

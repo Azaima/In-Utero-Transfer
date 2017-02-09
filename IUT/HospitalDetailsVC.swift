@@ -54,6 +54,9 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         textViews = [addressTextView, switchboardView, labourWardView, nicuView]
         var title = ""
         
+        scrollView.contentSize.height = 2000
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+        
         
         if viewOnlyMode {
             title = (hospital?.name)!
@@ -96,10 +99,13 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         levelPicker.isUserInteractionEnabled = false
         subspecialityField.isUserInteractionEnabled = false
         geolocationStack.isHidden = true
-        switchboardView.isEditable = false
-        labourWardView.isEditable = false
-        nicuView.isEditable = false
-        nicuCoordinatorView.isEditable = false
+        
+        
+        
+        for textview in textViews {
+            textview.isEditable = false
+            textview.dataDetectorTypes = .phoneNumber
+        }
     }
     
     func setupFields() {

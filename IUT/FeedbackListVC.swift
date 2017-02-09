@@ -54,17 +54,16 @@ class FeedbackListVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell")
-        configureCell(cell: cell!, messageDict: feedbackList[indexPath.row])
-        return cell!
+        let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell") as! FeedbackCell
+        configureCell(cell: cell, messageDict: feedbackList[indexPath.row])
+        return cell
     }
     
-    func configureCell(cell: UITableViewCell, messageDict: [String: Any]){
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
-        cell.textLabel?.text = messageDict["title"] as! String
+    func configureCell(cell: FeedbackCell, messageDict: [String: Any]){
+        
+        cell.titleLabel.text = (messageDict["title"] as? String != nil) ? (messageDict["title"] as? String)! : ""
         if let author = messageDict["username"] as? String {
-            cell.detailTextLabel?.text = author
+            cell.senderLabel.text = author
         }
     }
    

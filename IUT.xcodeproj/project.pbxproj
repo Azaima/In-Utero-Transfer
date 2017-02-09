@@ -20,6 +20,9 @@
 		E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C51E40CEAC000634AD /* SignInVC.swift */; };
 		E70B32C81E410F57000634AD /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C71E410F57000634AD /* DataService.swift */; };
 		E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C91E411EC4000634AD /* HospitalStruct.swift */; };
+		E72F89DF1E4A37F300C08FF3 /* ResetPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */; };
+		E72F89E11E4A84F300C08FF3 /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */; };
+		E72F89E31E4D0A6E00C08FF3 /* FeedbackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */; };
 		E749AEBF1E4759AE007AB3A1 /* UsersTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */; };
 		E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */; };
 		E749AEC31E47E1B5007AB3A1 /* FeedbackReviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */; };
@@ -48,6 +51,9 @@
 		E70B32C51E40CEAC000634AD /* SignInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
 		E70B32C71E410F57000634AD /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		E70B32C91E411EC4000634AD /* HospitalStruct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalStruct.swift; sourceTree = "<group>"; };
+		E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordVC.swift; sourceTree = "<group>"; };
+		E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
+		E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackCell.swift; sourceTree = "<group>"; };
 		E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersTableVC.swift; sourceTree = "<group>"; };
 		E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackListVC.swift; sourceTree = "<group>"; };
 		E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackReviewVC.swift; sourceTree = "<group>"; };
@@ -136,6 +142,8 @@
 				E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */,
 				E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */,
 				E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */,
+				E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */,
+				E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -145,6 +153,7 @@
 			children = (
 				E70B32C11E40C059000634AD /* ShadowEffect.swift */,
 				E70B32AB1E3EEAD3000634AD /* Main.storyboard */,
+				E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -290,10 +299,12 @@
 				E79E2D3A1E46604700786358 /* HospitalDetailsVC.swift in Sources */,
 				E749AEBF1E4759AE007AB3A1 /* UsersTableVC.swift in Sources */,
 				E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */,
+				E72F89DF1E4A37F300C08FF3 /* ResetPasswordVC.swift in Sources */,
 				E79E2D381E4631EB00786358 /* HospitalsDatabaseVC.swift in Sources */,
 				E70B32C41E40C1B6000634AD /* Constants.swift in Sources */,
 				E749AEC51E48B35A007AB3A1 /* SourceOfTransferVC.swift in Sources */,
 				E70B32C81E410F57000634AD /* DataService.swift in Sources */,
+				E72F89E31E4D0A6E00C08FF3 /* FeedbackCell.swift in Sources */,
 				E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */,
 				E76CD6F41E472987005E9D5E /* ReviewUserVC.swift in Sources */,
 				E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */,
@@ -302,6 +313,7 @@
 				E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */,
 				E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */,
 				E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */,
+				E72F89E11E4A84F300C08FF3 /* EditProfileVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +379,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -411,7 +423,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

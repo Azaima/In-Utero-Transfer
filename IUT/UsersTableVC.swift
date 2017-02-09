@@ -50,15 +50,15 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
     
     func getCompleteList() {
         
-        DataService.ds.REF_USER_BYHOSPITAL.child(loggedInUserData?["hospital"] as! String).observe( .value, with: { (hospitalUsersSnapshot) in
+        DataService.ds.REF_USER_BYHOSPITAL.child(loggedHospitalName!).observe( .value, with: { (hospitalUsersSnapshot) in
             self.allHospitalUsers = []
             
             let hospitalUsers = hospitalUsersSnapshot.children.allObjects as! [FIRDataSnapshot]
             
             for hospUser in hospitalUsers {
-                var user = hospUser.value as! [String: Any]
-                user["userID"] = hospUser.key
-                self.allHospitalUsers.append(user)
+                var user = hospUser.value as? [String: Any]
+                user?["userID"] = hospUser.key
+                self.allHospitalUsers.append(user!)
             }
             
             self.newHospitalUsers = self.allHospitalUsers.filter({ (user: [String : Any]) -> Bool in

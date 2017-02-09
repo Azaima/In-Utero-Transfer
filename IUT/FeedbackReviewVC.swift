@@ -19,9 +19,15 @@ class FeedbackReviewVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        titleLabel.text = messageDict["title"] as! String
-        authorLabel.text = messageDict["username"] as! String
-        bodyText.text = messageDict["body"] as! String
+        if let title = messageDict["title"] as? String {
+        titleLabel.text = title
+        }
+        if messageDict["username"] != nil {
+        authorLabel.text = messageDict["username"] as? String
+        }
+        if messageDict["body"] != nil {
+            bodyText.text = messageDict["body"] as? String
+        }
     }
 
         

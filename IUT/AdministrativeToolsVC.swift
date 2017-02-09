@@ -23,11 +23,11 @@ class AdministrativeToolsVC: UIViewController {
     }
     
     func setupView() {
-        if loggedInUserData?["hospital"] as? String == "(None)" && loggedInUserData?["adminRights"] as? String == "true" || loggedInUserData?["superUser"] as? String == "true" {
+        if loggedInUserData?["hospital"] as? String == "E B S" && loggedInUserData?["adminRights"] as? String == "true" || loggedInUserData?["ultimateUser"] as? String == "true" {
             hospitalDBButton.isHidden = false
         }
         
-        if loggedInUserData?["hospital"] as? String != "" && loggedInUserData?["adminRights"] as? String == "true" || loggedInUserData?["superUser"] as? String == "true" {
+        if loggedInUserData?["hospital"] as? String != "E B S" && loggedInUserData?["hospital"] as? String != "(None)" && (loggedInUserData?["adminRights"] as? String == "true" || loggedInUserData?["ultimateUser"] as? String == "true") {
             hospitalDetailsButton.isHidden = false
         }
         

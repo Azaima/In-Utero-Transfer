@@ -25,6 +25,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet weak var forgotPasswordButton: UIButton!
     
     var register = false
     var mainVC = MainVC()
@@ -56,11 +57,13 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     }
 
     func setupView() {
+        forgotPasswordButton.isHidden = register
         if register {
             
             registrationStack.isHidden = false
             signInButton.setTitle("Register and Sign In", for: .normal)
             signInButton.backgroundColor = UIColor(red: 1, green: 143/255, blue: 0, alpha: 1)
+            
             
         }   else {
             

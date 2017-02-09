@@ -11,7 +11,7 @@ import CoreLocation
 import Firebase
 import SwiftKeychainWrapper
 
-class MainVC: UIViewController, CLLocationManagerDelegate {
+class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var registerButton: UIButton!
@@ -25,6 +25,10 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var administrativeToolsButton: UIButton!
     var functionButtons = [UIButton]()
     @IBOutlet weak var cotStatusLabel: UILabel!
+    @IBOutlet weak var editProfileButton: UIButton!
+    
+    @IBOutlet weak var changeHospitalButton: UIButton!
+    @IBOutlet weak var hospitalPicker: UIPickerView!
     
     var locationManager = CLLocationManager()
     var myLocation: CLLocation? {
@@ -34,21 +38,30 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
             self.prepareDataBase {
                 self.activityIndicator.stopAnimating()
                 self.stack.isHidden = false
+                if !self.loggedInComplete {
+                    if loggedInUserData != nil {
+                        self.toggleSignInButton(signedIn: true, userData: loggedInUserData)
+                    }
+                }
             }
         }
     }
     
     var firstStartup = true
+    var loggedInComplete = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mainscreen = self
         
+        hospitalPicker.delegate = self
+        hospitalPicker.dataSource = self
+        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.startMonitoringSignificantLocationChanges()
         locationStatus()
-        functionButtons = [feedbackButton,updateStatusButton,administrativeToolsButton]
+        functionButtons = [feedbackButton,updateStatusButton,administrativeToolsButton, changeHospitalButton]
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -63,7 +76,12 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
                     
                     loggedInUserData = user.value as? [String: Any]
                     
-                    self.toggleSignInButton(signedIn: true, userData: loggedInUserData)
+                    if hospitalsArray.count > 2 {
+                        
+                        self.loggedInComplete = true
+                        self.toggleSignInButton(signedIn: true, userData: loggedInUserData)
+                        
+                    }
                 })
             }
         }
@@ -100,6 +118,7 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
             }
             sortHospitalsToNetworksAndLevels()
             
+            self.hospitalPicker.reloadAllComponents()
             complete()
 
         })
@@ -138,44 +157,59 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
         signInButton.isHidden = signedIn
         registerButton.isHidden = signedIn
         signOutButton.isHidden = !signedIn
+        editProfileButton.isHidden = !signedIn
         loggedIn = signedIn
         if userData != nil {
             loggedHospitalName = (userData?["hospital"] as! String)
         }
         if signedIn {
-            loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                return HospitalStruct.name == loggedHospitalName
-            })!]
-            userLabel.text = "Currently Logged in as - \((userData?["firstName"])!) \((userData?["surname"])!)"
-            if loggedHospitalName != "(None)" {
-                userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(loggedHospitalName!)"
-            }
-            feedbackButton.isHidden = false
-            if userData?["hospital"] as! String != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
-                updateStatusButton.isHidden = false
-                
-                if loggedHospitalName != nil && loggedHospitalName != "(None)" && loggedHospitalName != "E B S" {
-                    cotStatusLabel.isHidden = false
-                    let hospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                        return HospitalStruct.name == loggedHospitalName
-                    })!]
-                    if hospital.cotsAvailable != nil {
-                        cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
-                    }   else {
-                        cotStatusLabel.text = "Your cot status has never been updated"
-                    }
-                    
+//            if hospitalsArray.count == 2 {
+//                userLabel.text = "Unable to access the Database"
+//                self.activityIndicator.startAnimating()
+//                self.prepareDataBase {
+//                    self.activityIndicator.stopAnimating()
+//                    self.stack.isHidden = false
+//                }
+//            } else {
+            
+                loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                    return HospitalStruct.name == loggedHospitalName
+                })!]
+                userLabel.text = "Currently Logged in as - \((userData?["firstName"])!) \((userData?["surname"])!)"
+                if loggedHospitalName != "(None)" {
+                    userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(loggedHospitalName!)"
                 }
-
+                feedbackButton.isHidden = false
+                if userData?["hospital"] as! String != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true" {
+                    updateStatusButton.isHidden = false
+                    
+                    if loggedHospitalName != nil && loggedHospitalName != "(None)" && loggedHospitalName != "E B S" {
+                        cotStatusLabel.isHidden = false
+                        let hospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                            return HospitalStruct.name == loggedHospitalName
+                        })!]
+                        if hospital.cotsAvailable != nil {
+                            cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
+                        }   else {
+                            cotStatusLabel.text = "Your cot status has never been updated"
+                        }
+                        
+                    }
+        
+                }
                 
-            }
-            
-            if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" {
-                administrativeToolsButton.isHidden = false
-            }
-            
-            
-            
+                if loggedHospitalName == "(None)" || loggedHospitalName == "E B S" {
+                    cotStatusLabel.isHidden = true
+                }
+                
+                if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true"{
+                    administrativeToolsButton.isHidden = false
+                }
+                
+                if userData?["ultimateUser"] as? String == "true" {
+                    changeHospitalButton.isHidden = false
+                }
+//            }
         }   else {
             userLabel.text = "Currently Logged in as - Guest User"
             for button in functionButtons {
@@ -213,5 +247,42 @@ class MainVC: UIViewController, CLLocationManagerDelegate {
             performSegue(withIdentifier: "detailsForStatusUpdate", sender: nil)
         }
     }
+    
+    //MARK: PickerView Delegate and Ultimate user functions
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return hospitalsArray.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return hospitalsArray[row].name
+    }
+    
+    @IBAction func changeHospitalPressed(_ sender: Any) {
+        if hospitalPicker.isHidden {
+            hospitalPicker.isHidden = false
+            hospitalPicker.selectRow(hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                return HospitalStruct.name == loggedHospitalName
+            })!, inComponent: 0, animated: true)
+            changeHospitalButton.setTitle("Confirm", for: .normal)
+            changeHospitalButton.backgroundColor = UIColor(red: 81/255, green: 164/255, blue: 1, alpha: 1)
+            changeHospitalButton.setTitleColor(UIColor.white, for: .normal)
+
+        }   else {
+            hospitalPicker.isHidden = true
+            loggedInUserHospital = hospitalsArray[hospitalPicker.selectedRow(inComponent: 0)]
+            loggedHospitalName = loggedInUserHospital?.name
+            loggedInUserData?["hospital"] = loggedHospitalName!
+            changeHospitalButton.setTitle("Change Hospital", for: .normal)
+            changeHospitalButton.backgroundColor = .white
+            changeHospitalButton.setTitleColor(UIColor.darkGray, for: .normal)
+            toggleSignInButton(signedIn: true, userData: loggedInUserData)
+        }
+    }
+    
 }
 
