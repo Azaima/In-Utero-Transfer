@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreLocation
 
-class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
 
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var selectHospital: UISegmentedControl!
@@ -18,6 +19,9 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     var suggestedHospital: HospitalStruct?
     var hospitalSelected = false
     var hospListForTable = [[HospitalStruct]]()
+    
+    var locationManager = CLLocationManager()
+    var location: CLLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,11 +36,13 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: Check location
     
     func checkLocation(){
+        location = locationManager.location
+        
         var foundHospital = false
         var closestDistance: Double?
         var closestHospital: HospitalStruct?
         
-        if currentLocation != nil {
+        if location != nil {
             for hospital in hospitalsListing {
                 if currentLocation.distance(from: hospital.location) < 1000 {
                     currentHospital = hospital
@@ -67,16 +73,16 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
         
         if foundHospital {
             locationLabel.text = "You are currently in \((hospital.name)!)"
-            selectHospital.setTitle("Use Current Hospital", forSegmentAt: 1)
+            selectHospital.setTitle("Use Current Hospital", forSegmentAt: 0)
             
         }   else if !foundHospital && loggedIn && loggedInUserHospital?.name != "E B S" && loggedInUserHospital?.name != "(None)" {
             locationLabel.text = "You currently are not in a hospital.\nWould you like to use your link hospital?"
-            selectHospital.setTitle("Use Link Hospital", forSegmentAt: 1)
+            selectHospital.setTitle("Use Link Hospital", forSegmentAt: 0)
             
             suggestedHospital = loggedInUserHospital
         }   else {
             locationLabel.text = "You currently are not in a hospital. The closest hospital is \((hospital.name)!).\nWould you like to use this hospital?"
-            selectHospital.setTitle("Use Suggested Hospital", forSegmentAt: 1)
+            selectHospital.setTitle("Use Suggested Hospital", forSegmentAt: 0)
             
         }
         
@@ -86,7 +92,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: Select the source Hospital
     
     @IBAction func hospitalSelected(_ sender: Any) {
-        if selectHospital.selectedSegmentIndex == 1 {
+        if selectHospital.selectedSegmentIndex == 0 {
             currentHospital = suggestedHospital
             selectHospital.isHidden = true
             hospitalSelected = true

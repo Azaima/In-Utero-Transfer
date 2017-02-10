@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class EditProfileVC: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class EditProfileVC: UIViewController, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var passwordStack: UIStackView!
     @IBOutlet weak var pageTitle: UINavigationItem!
@@ -19,13 +19,14 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UIPickerViewDelegate
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var changeEmailButton: UIButton!
     @IBOutlet weak var hospitalStack: UIStackView!
-    @IBOutlet weak var hospitalPicker: UIPickerView!
+    
     @IBOutlet weak var changeHospitalButton: UIButton!
     @IBOutlet weak var changePasswordStack: UIStackView!
     @IBOutlet weak var newPasswordField: UITextField!
     @IBOutlet weak var confirmPasswordField: UITextField!
     @IBOutlet weak var changePasswordButton: UIButton!
     @IBOutlet weak var changeEmailStack: UIStackView!
+    @IBOutlet weak var hospitalTable: UITableView!
     
     var fields = [UITextField]()
     
@@ -36,8 +37,8 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UIPickerViewDelegate
         for field in fields {
             field.delegate = self
         }
-        hospitalPicker.delegate = self
-        hospitalPicker.dataSource = self
+        hospitalTable.delegate = self
+        hospitalTable.dataSource = self
         
         removeBackButton(self, title: nil)
         setupFields()
@@ -51,24 +52,33 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UIPickerViewDelegate
         pageTitle.title = "\((loggedInUserData?["firstName"])!) \((loggedInUserData?["surname"])!) Profile"
         
         emailField.text = "\((loggedInUserData?["email"])!)"
-        hospitalPicker.selectRow(hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+        
+        hospitalTable.selectRow(at: IndexPath (row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
             return HospitalStruct.name == loggedHospitalName
-        })!, inComponent: 0, animated: true)
+        })!, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.none)
+        
+        hospitalTable.scrollToRow(at: IndexPath (row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+            return HospitalStruct.name == loggedHospitalName
+        })!, section: 0), at: UITableViewScrollPosition.none, animated: true)
     }
     
     // MARK: PickerView Delegate
     
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return hospitalsArray.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return hospitalsArray[row].name!
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "hospitalCellEditProfile")
+        cell?.textLabel?.text = hospitalsArray[indexPath.row].name
+        
+        return cell!
     }
+    
     
     
     // MARK: Editing profile fields
@@ -151,17 +161,19 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UIPickerViewDelegate
     }
     
     @IBAction func changeHospitalPressed(_ sender: Any) {
-        if !hospitalPicker.isUserInteractionEnabled {
+        if !hospitalTable.isUserInteractionEnabled {
             
             message(text: "Changing your link hospital will reset your privilages till your account has been reviewed by the new hospital's admin team.\nWould you like to proceed?", alert: true)
             acknowledgeMessageStack.isHidden = false
         }   else {
             
-            hospitalPicker.isUserInteractionEnabled = false
+            hospitalTable.isUserInteractionEnabled = false
             changeButton(button: changeHospitalButton, title: "Change Hospital", confirm: false)
             
-            loggedInUserHospital = hospitalsArray[hospitalPicker.selectedRow(inComponent: 0)]
-            
+            if hospitalTable.indexPathForSelectedRow != nil {
+                loggedInUserHospital = hospitalsArray[(hospitalTable.indexPathForSelectedRow?.row)!]
+            }
+                
             DataService.ds.changeUserHospital(oldHospital: loggedHospitalName!, newHospital: (loggedInUserHospital?.name!)!)
             
             loggedHospitalName = loggedInUserHospital?.name!
@@ -216,7 +228,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UIPickerViewDelegate
         acknowledgeMessageStack.isHidden = true
         
         if sender.tag == 1 {
-            hospitalPicker.isUserInteractionEnabled = true
+            hospitalTable.isUserInteractionEnabled = true
             message(text: "Please select the new hospital", alert: false)
             changeButton(button: changeHospitalButton, title: "Confirm", confirm: true)
         }

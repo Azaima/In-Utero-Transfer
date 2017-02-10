@@ -23,7 +23,9 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     @IBOutlet weak var addressTextView: UITextView!
     @IBOutlet weak var networkPicker: UIPickerView!
     @IBOutlet weak var levelPicker: UIPickerView!
-    @IBOutlet weak var subspecialityField: UITextField!
+    
+    @IBOutlet weak var subspecialityView: UITextView!
+    
     @IBOutlet weak var geolocationStack: UIStackView!
     @IBOutlet weak var latitudeField: UITextField!
     @IBOutlet weak var longitudeField: UITextField!
@@ -71,10 +73,10 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             
             
             if newHospital {
-                title = "Adding a new hospital"
+                title = "New hospital"
                 
             }   else {
-                title = "Editing \((hospital?.name)!)"
+                title = "\((hospital?.name)!)"
                 setupFields()
             }
             removeBackButton(self, title: "Cancel")
@@ -97,7 +99,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         hospitalNameStack.isHidden = true
         networkPicker.isUserInteractionEnabled = false
         levelPicker.isUserInteractionEnabled = false
-        subspecialityField.isUserInteractionEnabled = false
+        subspecialityView.isUserInteractionEnabled = false
         geolocationStack.isHidden = true
         
         
@@ -114,7 +116,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         addressTextView.text = hospital?.address!
         networkPicker.selectRow(networks.index(of: (hospital?.network)!)!, inComponent: 0, animated: true)
         levelPicker.selectRow((hospital?.level)! - 1, inComponent: 0, animated: true)
-        subspecialityField.text = hospital?.subspecialty
+        subspecialityView.text = hospital?.subspecialty
         latitudeField.text = "\((hospital?.location.coordinate.latitude)!)"
         longitudeField.text = "\((hospital?.location.coordinate.longitude)!)"
         switchboardView.text = hospital?.switchBoard!
@@ -122,7 +124,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         nicuView.text = hospital?.nicuNumber!
         nicuCoordinatorView.text = hospital?.nicuCoordinator
         if hospital?.cotsAvailable != nil {
-            currentCotsLabel.text = "\((hospital?.cotsAvailable)!) cots on \((hospital?.cotsUpdate)!)"
+            currentCotsLabel.text = "\((hospital?.cotsAvailable)!) cots @ (\((hospital?.cotsUpdate)!))"
         }
     }
     
@@ -202,7 +204,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
                     "network": networks[networkPicker.selectedRow(inComponent: 0)],
                     "nicu": nicuView.text!,
                     "nicuCoordinator": nicuCoordinatorView.text,
-                    "subspecialty": subspecialityField.text!,
+                    "subspecialty": subspecialityView.text!,
                     "switchBoard": switchboardView.text!,
                     "lastUpdated": formatter.string(from: date),
                     "updatedBy": loggedInUserID!] as [String: Any]

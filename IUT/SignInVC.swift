@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 import SwiftKeychainWrapper
 
-class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var emailField: UITextField!
@@ -21,11 +21,15 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     @IBOutlet weak var firstNameField: UITextField!
     @IBOutlet weak var surnameField: UITextField!
     @IBOutlet weak var rolePicker: UIPickerView!
-    @IBOutlet weak var hospitalPicker: UIPickerView!
+//    @IBOutlet weak var hospitalPicker: UIPickerView!
+    @IBOutlet weak var hospitalTable: UITableView!
     
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var forgotPasswordButton: UIButton!
+    @IBOutlet weak var extenderView: UIView!
+    
+    
     
     var register = false
     var mainVC = MainVC()
@@ -40,7 +44,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         scrollView.contentSize.height = self.view.frame.height
         scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         fields = [emailField,passwordField, confirmPasswordField, firstNameField, surnameField]
@@ -52,10 +56,13 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
         emailField.becomeFirstResponder()
         rolePicker.delegate = self
         rolePicker.dataSource = self
-        hospitalPicker.delegate = self
-        hospitalPicker.dataSource = self
+        hospitalTable.delegate = self
+        hospitalTable.dataSource = self
+        
     }
 
+    
+    
     func setupView() {
         forgotPasswordButton.isHidden = register
         if register {
@@ -79,19 +86,28 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if pickerView == rolePicker {
-            return roles.count
-        }   else {
-            return hospitalsArray.count
-        }
+        return roles.count
+        
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if pickerView == rolePicker {
+        
             return roles[row]
-        }   else {
-            return hospitalsArray[row].name
-        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return hospitalsArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "hospitalCell")
+        cell?.textLabel?.text = hospitalsArray[indexPath.row].name!
+        
+        return cell!
     }
     
     @IBAction func signInPressed(_ sender: UIButton) {
@@ -124,7 +140,12 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
                                 return
                             }
                             self.userID = user?.uid
-                            self.hospital = hospitalsArray[self.hospitalPicker.selectedRow(inComponent: 0)].name
+                            
+                            if self.hospitalTable.indexPathForSelectedRow != nil {
+                                self.hospital = hospitalsArray[(self.hospitalTable.indexPathForSelectedRow?.row)!].name
+                            } else {
+                                self.hospital = "(None)"
+                            }
                             self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)],"hospital": self.hospital! ,"email":email, "newUser": "true"]
                             
                             DataService.ds.createFireBaseDBUser(uid: (user?.uid)!, hospital: self.hospital! ,userData: self.userData)
@@ -136,7 +157,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, 
                                 field.isUserInteractionEnabled = false
                             }
                             self.rolePicker.isUserInteractionEnabled = false
-                            self.hospitalPicker.isUserInteractionEnabled = false
+                            self.hospitalTable.isUserInteractionEnabled = false
                             
                             self.errorLabel.text = "Welcome to IUT App.\nYour registration was successfully completed.\nYour local admin team will review your registration and manage your App entitlements."
                             self.successfulRegistration = true

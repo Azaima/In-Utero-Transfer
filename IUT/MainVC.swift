@@ -11,7 +11,7 @@ import CoreLocation
 import Firebase
 import SwiftKeychainWrapper
 
-class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
+class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var registerButton: UIButton!
@@ -28,7 +28,10 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSourc
     @IBOutlet weak var editProfileButton: UIButton!
     
     @IBOutlet weak var changeHospitalButton: UIButton!
-    @IBOutlet weak var hospitalPicker: UIPickerView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    
+    
+    @IBOutlet weak var hospitalTable: UITableView!
     
     var locationManager = CLLocationManager()
     var myLocation: CLLocation? {
@@ -38,11 +41,22 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSourc
             self.prepareDataBase {
                 self.activityIndicator.stopAnimating()
                 self.stack.isHidden = false
-                if !self.loggedInComplete {
-                    if loggedInUserData != nil {
-                        self.toggleSignInButton(signedIn: true, userData: loggedInUserData)
+                self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                if self.firstStartup {
+                    self.firstStartup = false
+                    if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
+                        
+                        loggedInUserID = userID
+                        
+                        DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
+                            
+                            loggedInUserData = user.value as? [String: Any]
+                            
+                            
+                        })
                     }
                 }
+                
             }
         }
     }
@@ -54,8 +68,8 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSourc
         super.viewDidLoad()
         mainscreen = self
         
-        hospitalPicker.delegate = self
-        hospitalPicker.dataSource = self
+        hospitalTable.delegate = self
+        hospitalTable.dataSource = self
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
@@ -66,25 +80,20 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSourc
     
     override func viewDidAppear(_ animated: Bool) {
 //        _ = KeychainWrapper.standard.removeAllKeys()
-        if firstStartup {
-            firstStartup = false
-            if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
-            
-                loggedInUserID = userID
-                
-                DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
-                    
-                    loggedInUserData = user.value as? [String: Any]
-                    
-                    if hospitalsArray.count > 2 {
-                        
-                        self.loggedInComplete = true
-                        self.toggleSignInButton(signedIn: true, userData: loggedInUserData)
-                        
-                    }
-                })
-            }
-        }
+//        if firstStartup {
+//            firstStartup = false
+//            if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
+//            
+//                loggedInUserID = userID
+//                
+//                DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
+//                    
+//                    loggedInUserData = user.value as? [String: Any]
+//                    
+//                    
+//                })
+//            }
+//        }
     }
 
     func locationStatus() {
@@ -118,7 +127,7 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSourc
             }
             sortHospitalsToNetworksAndLevels()
             
-            self.hospitalPicker.reloadAllComponents()
+            self.hospitalTable.reloadData()
             complete()
 
         })
@@ -249,32 +258,41 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UIPickerViewDataSourc
     }
     
     //MARK: PickerView Delegate and Ultimate user functions
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return hospitalsArray.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return hospitalsArray[row].name
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = hospitalTable.dequeueReusableCell(withIdentifier: "hospitalCellmainVC")
+        cell?.textLabel?.text = hospitalsArray[indexPath.row].name
+        
+        return cell!
     }
     
     @IBAction func changeHospitalPressed(_ sender: Any) {
-        if hospitalPicker.isHidden {
-            hospitalPicker.isHidden = false
-            hospitalPicker.selectRow(hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+        if hospitalTable.isHidden {
+            hospitalTable.isHidden = false
+            hospitalTable.selectRow(at: IndexPath(row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
                 return HospitalStruct.name == loggedHospitalName
-            })!, inComponent: 0, animated: true)
+            })!, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.none)
+            
+            hospitalTable.scrollToRow(at: IndexPath (row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                return HospitalStruct.name == loggedHospitalName
+            })!, section: 0), at: UITableViewScrollPosition.none, animated: true)
+            
             changeHospitalButton.setTitle("Confirm", for: .normal)
             changeHospitalButton.backgroundColor = UIColor(red: 81/255, green: 164/255, blue: 1, alpha: 1)
             changeHospitalButton.setTitleColor(UIColor.white, for: .normal)
 
         }   else {
-            hospitalPicker.isHidden = true
-            loggedInUserHospital = hospitalsArray[hospitalPicker.selectedRow(inComponent: 0)]
+            hospitalTable.isHidden = true
+            if hospitalTable.indexPathForSelectedRow != nil {
+                loggedInUserHospital = hospitalsArray[(hospitalTable.indexPathForSelectedRow?.row)!]
+            }
             loggedHospitalName = loggedInUserHospital?.name
             loggedInUserData?["hospital"] = loggedHospitalName!
             changeHospitalButton.setTitle("Change Hospital", for: .normal)

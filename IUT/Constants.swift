@@ -46,7 +46,11 @@ let USER_UID = "uid"
 var mainscreen: MainVC?
 
 var loggedInUserID: String?
-var loggedInUserData: [String:Any]?
+var loggedInUserData: [String:Any]? {
+    didSet{
+        mainscreen?.toggleSignInButton(signedIn: true, userData: loggedInUserData)
+    }
+}
 var loggedInUserHospital: HospitalStruct? {
     didSet{
         if mainscreen !== nil {

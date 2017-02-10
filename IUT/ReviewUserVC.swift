@@ -111,13 +111,13 @@ class ReviewUserVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSour
     @IBAction func savePressed(_ sender: UIBarButtonItem) {
         var updateDict = [String:Any]()
         updateDict["role"] = roles[rolePicker.selectedRow(inComponent: 0)]
-        if superSwitch.isOn {
-            updateDict["superUser"] = "true"
-        }   else {
-            updateDict["adminRights"] = administrativeSwitch.isOn ? "true" : nil
-            updateDict["feedbackRights"] = feedbackSwitch.isOn ? "true" : nil
-            updateDict["statusRights"] = statusSwitch.isOn ? "true" : nil
-        }
+        
+        updateDict["superUser"] = superSwitch.isOn ? "true" : nil
+        
+        updateDict["adminRights"] = administrativeSwitch.isOn ? "true" : nil
+        updateDict["feedbackRights"] = feedbackSwitch.isOn ? "true" : nil
+        updateDict["statusRights"] = statusSwitch.isOn ? "true" : nil
+        
         formatter.dateFormat = "dd-MM-yy HH:mm"
         updateDict["entitlementsReviewed"] = ["reviewerID": loggedInUserID, "reviewDate": formatter.string(from: date)]
         
