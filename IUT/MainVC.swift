@@ -29,35 +29,100 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     
     @IBOutlet weak var changeHospitalButton: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
-    
-    
-    @IBOutlet weak var hospitalTable: UITableView!
+ 
+    @IBOutlet weak var selectedRegionLabel: UILabel!
     
     var locationManager = CLLocationManager()
+    var geocoder = CLGeocoder()
+    
+    @IBOutlet weak var regionsTable: UITableView!
+    @IBOutlet weak var regionSelectionStack: UIStackView!
+    
+    
     var myLocation: CLLocation? {
         didSet{
+            userLabel.text = "Initiating Application"
             currentLocation = myLocation
-            self.activityIndicator.startAnimating()
-            self.prepareDataBase {
-                self.activityIndicator.stopAnimating()
-                self.stack.isHidden = false
-                self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-                if self.firstStartup {
-                    self.firstStartup = false
-                    if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
+            if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
+                
+                loggedInUserID = userID
+                
+                DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
+                    
+                    let dataObtained = user.value as? [String: Any]
+                    country = dataObtained?["country"] as! String
+                    loggedInUserRegion = dataObtained?["region"] as! String
+                    
+                    
+                    DataService.ds.REF_REGIONS.child(country).observeSingleEvent(of: .value, with: { (regionsSnap) in
                         
-                        loggedInUserID = userID
+                        if let regionsSnap = regionsSnap.value as? [String: Any] {
+                            regions = regionsSnap
+                        }
+                        self.activityIndicator.startAnimating()
+                        self.prepareDataBase {
+                            self.activityIndicator.stopAnimating()
+                            self.stack.isHidden = false
+                            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                            if self.firstStartup {
+                                self.firstStartup = false
+                            }
+                            loggedInUserData = dataObtained
+
+                            
+                        }
+
+                    })
+                })
+            } else {
+
+            
+                geocoder.reverseGeocodeLocation(myLocation!, completionHandler: { (locationName, error) in
+                    if error == nil {
+                        print("\((locationName?[0].country)!)\t \((locationName?[0].addressDictionary?["City"])!)")
+                        country = (locationName?[0].country)!
                         
-                        DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
+                        DataService.ds.REF_REGIONS.child(country).observeSingleEvent(of: .value, with: { (regionsSnap) in
                             
-                            loggedInUserData = user.value as? [String: Any]
-                            
-                            
+                            if let regionsSnap = regionsSnap.value as? [String: Any] {
+                                regions = regionsSnap
+                                
+                                if regions[(locationName?[0].addressDictionary?["City"]) as! String]  != nil {
+                                    
+                                    loggedInUserRegion = (locationName?[0].addressDictionary?["City"]) as! String
+                                    networks = regions[(locationName?[0].addressDictionary?["City"]) as! String] as! [String]
+                                }   else if regions.count == 1 {
+                                    for region in regions {
+                                        loggedInUserRegion = region.key
+                                        networks = region.value as! [String]
+                                    }
+                                }   else {
+                                    self.regionSelectionStack.isHidden = false
+                                }
+                                
+                                if loggedInUserRegion != "" {
+                                    self.startPrepping()
+                                }
+                            }
                         })
                     }
-                }
-                
+                })
             }
+            
+            
+        }
+    }
+    
+    func startPrepping() {
+        self.activityIndicator.startAnimating()
+        self.prepareDataBase {
+            self.activityIndicator.stopAnimating()
+            self.stack.isHidden = false
+            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+            if self.firstStartup {
+                self.firstStartup = false
+            }
+            
         }
     }
     
@@ -68,9 +133,8 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         super.viewDidLoad()
         mainscreen = self
         
-        hospitalTable.delegate = self
-        hospitalTable.dataSource = self
-        
+        regionsTable.delegate = self
+        regionsTable.dataSource = self
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.startMonitoringSignificantLocationChanges()
@@ -79,26 +143,31 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
+//        insertNewDatabase()
+        
 //        _ = KeychainWrapper.standard.removeAllKeys()
-//        if firstStartup {
-//            firstStartup = false
-//            if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
-//            
-//                loggedInUserID = userID
-//                
-//                DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
-//                    
-//                    loggedInUserData = user.value as? [String: Any]
-//                    
-//                    
-//                })
-//            }
-//        }
+        
+
     }
 
+    
+    
+    
+    func insertNewDatabase() {
+        
+        DataService.ds.REF_COT_STATUS_ARCHIVE.observeSingleEvent(of: .value, with: { (hospitals) in
+            if let hospitalsData = hospitals.value as? [String: Any] {
+                
+                DataService.ds.REF_COT_STATUS_ARCHIVE.child("United Kingdom").child("London").updateChildValues(hospitalsData)
+            }
+        })
+    }
+    
     func locationStatus() {
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             myLocation =  locationManager.location
+            
             
         }   else {
             locationManager.requestWhenInUseAuthorization()
@@ -112,7 +181,8 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     
     func prepareDataBase(complete: @escaping DownloadComplete) {
 
-        DataService.ds.REF_HOSPITALS.queryOrderedByKey().observe(.value, with: { (snapshot) in
+        self.userLabel.text = "\(country) - \(loggedInUserRegion)"
+        DataService.ds.REF_HOSPITALS_BY_REGION.child(country).child(loggedInUserRegion).queryOrderedByKey().observe(.value, with: { (snapshot) in
             hospitalsArray = [NO_HOSPITAL, EBS_Struct]
 
             if let snapshot = snapshot.children.allObjects as? [FIRDataSnapshot]{
@@ -124,10 +194,20 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
                     }
                     hospitalsArray.append(hospital)
                 }
+                
+                DataService.ds.REF_REGIONS.child(country).child(loggedInUserRegion).observe(.value, with: { (networksSnapshot) in
+                    
+                    if let networksSnap = networksSnapshot.value as? [String] {
+                        networks = networksSnap
+                        
+                        sortHospitalsToNetworksAndLevels()
+                    }
+                })
+
+                
             }
-            sortHospitalsToNetworksAndLevels()
             
-            self.hospitalTable.reloadData()
+            
             complete()
 
         })
@@ -168,59 +248,50 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         signOutButton.isHidden = !signedIn
         editProfileButton.isHidden = !signedIn
         loggedIn = signedIn
-        if userData != nil {
-            loggedHospitalName = (userData?["hospital"] as! String)
-        }
-        if signedIn {
-//            if hospitalsArray.count == 2 {
-//                userLabel.text = "Unable to access the Database"
-//                self.activityIndicator.startAnimating()
-//                self.prepareDataBase {
-//                    self.activityIndicator.stopAnimating()
-//                    self.stack.isHidden = false
-//                }
-//            } else {
-            
-                loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                    return HospitalStruct.name == loggedHospitalName
-                })!]
-                userLabel.text = "Currently Logged in as - \((userData?["firstName"])!) \((userData?["surname"])!)"
-                if loggedHospitalName != "(None)" {
-                    userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(loggedHospitalName!)"
-                }
-                feedbackButton.isHidden = false
-                if userData?["hospital"] as! String != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true" {
-                    updateStatusButton.isHidden = false
-                    
-                    if loggedHospitalName != nil && loggedHospitalName != "(None)" && loggedHospitalName != "E B S" {
-                        cotStatusLabel.isHidden = false
-                        let hospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                            return HospitalStruct.name == loggedHospitalName
-                        })!]
-                        if hospital.cotsAvailable != nil {
-                            cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
-                        }   else {
-                            cotStatusLabel.text = "Your cot status has never been updated"
-                        }
-                        
-                    }
         
-                }
+        if signedIn && userData != nil {
+            
+            loggedHospitalName = (userData?["hospital"] as! String)
+            loggedInUserHospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                return HospitalStruct.name == loggedHospitalName
+            })!]
+            userLabel.text = "\(country) - \(loggedInUserRegion)\nCurrently Logged in as - \((userData?["firstName"])!) \((userData?["surname"])!)"
+            if loggedHospitalName != "(None)" {
+                userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(loggedHospitalName!)"
+            }
+            feedbackButton.isHidden = false
+            if userData?["hospital"] as! String != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true" {
+                updateStatusButton.isHidden = false
                 
-                if loggedHospitalName == "(None)" || loggedHospitalName == "E B S" {
-                    cotStatusLabel.isHidden = true
+                if loggedHospitalName != nil && loggedHospitalName != "(None)" && loggedHospitalName != "E B S" {
+                    cotStatusLabel.isHidden = false
+                    let hospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+                        return HospitalStruct.name == loggedHospitalName
+                    })!]
+                    if hospital.cotsAvailable != nil {
+                        cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
+                    }   else {
+                        cotStatusLabel.text = "Your cot status has never been updated"
+                    }
+                    
                 }
-                
-                if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true"{
-                    administrativeToolsButton.isHidden = false
-                }
-                
-                if userData?["ultimateUser"] as? String == "true" {
-                    changeHospitalButton.isHidden = false
-                }
-//            }
+    
+            }
+            
+            if loggedHospitalName == "(None)" || loggedHospitalName == "E B S" {
+                cotStatusLabel.isHidden = true
+            }
+            
+            if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true"{
+                administrativeToolsButton.isHidden = false
+            }
+            
+            if userData?["ultimateUser"] as? String == "true" {
+                changeHospitalButton.isHidden = false
+            }
+
         }   else {
-            userLabel.text = "Currently Logged in as - Guest User"
+            userLabel.text = "\(country) - \(loggedInUserRegion)\nCurrently Logged in as - Guest User"
             for button in functionButtons {
                 button.isHidden = true
             }
@@ -257,50 +328,71 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         }
     }
     
-    //MARK: PickerView Delegate and Ultimate user functions
+    //MARK: TableView Delegate and Ultimate user functions
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return hospitalsArray.count
+        return regions.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = hospitalTable.dequeueReusableCell(withIdentifier: "hospitalCellmainVC")
-        cell?.textLabel?.text = hospitalsArray[indexPath.row].name
+        let cell = tableView.dequeueReusableCell(withIdentifier: "hospitalCellmainVC")
+        cell?.textLabel?.text = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
+            return region1.key < region2.key
+        })[indexPath.row].key
         
         return cell!
     }
     
-    @IBAction func changeHospitalPressed(_ sender: Any) {
-        if hospitalTable.isHidden {
-            hospitalTable.isHidden = false
-            hospitalTable.selectRow(at: IndexPath(row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                return HospitalStruct.name == loggedHospitalName
-            })!, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.none)
-            
-            hospitalTable.scrollToRow(at: IndexPath (row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                return HospitalStruct.name == loggedHospitalName
-            })!, section: 0), at: UITableViewScrollPosition.none, animated: true)
-            
-            changeHospitalButton.setTitle("Confirm", for: .normal)
-            changeHospitalButton.backgroundColor = UIColor(red: 81/255, green: 164/255, blue: 1, alpha: 1)
-            changeHospitalButton.setTitleColor(UIColor.white, for: .normal)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        regionSelectionStack.isHidden = true
+        loggedInUserRegion = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
+            return region1.key < region2.key
+        })[indexPath.row].key
+        selectedRegionLabel . text = loggedInUserRegion
+        
+        networks = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
+            return region1.key < region2.key
+        })[indexPath.row].value as! [String]
 
-        }   else {
-            hospitalTable.isHidden = true
-            if hospitalTable.indexPathForSelectedRow != nil {
-                loggedInUserHospital = hospitalsArray[(hospitalTable.indexPathForSelectedRow?.row)!]
-            }
-            loggedHospitalName = loggedInUserHospital?.name
-            loggedInUserData?["hospital"] = loggedHospitalName!
-            changeHospitalButton.setTitle("Change Hospital", for: .normal)
-            changeHospitalButton.backgroundColor = .white
-            changeHospitalButton.setTitleColor(UIColor.darkGray, for: .normal)
-            toggleSignInButton(signedIn: true, userData: loggedInUserData)
-        }
+        startPrepping()
     }
+    
+    @IBAction func regionsLabelPressed(_ sender: UITapGestureRecognizer) {
+        regionsTable.isHidden = !regionsTable.isHidden
+    }
+    
+    
+//    @IBAction func changeHospitalPressed(_ sender: Any) {
+//        if hospitalTable.isHidden {
+//            hospitalTable.isHidden = false
+//            hospitalTable.selectRow(at: IndexPath(row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+//                return HospitalStruct.name == loggedHospitalName
+//            })!, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.none)
+//            
+//            hospitalTable.scrollToRow(at: IndexPath (row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
+//                return HospitalStruct.name == loggedHospitalName
+//            })!, section: 0), at: UITableViewScrollPosition.none, animated: true)
+//            
+//            changeHospitalButton.setTitle("Confirm", for: .normal)
+//            changeHospitalButton.backgroundColor = UIColor(red: 81/255, green: 164/255, blue: 1, alpha: 1)
+//            changeHospitalButton.setTitleColor(UIColor.white, for: .normal)
+//
+//        }   else {
+//            hospitalTable.isHidden = true
+//            if hospitalTable.indexPathForSelectedRow != nil {
+//                loggedInUserHospital = hospitalsArray[(hospitalTable.indexPathForSelectedRow?.row)!]
+//            }
+//            loggedHospitalName = loggedInUserHospital?.name
+//            loggedInUserData?["hospital"] = loggedHospitalName!
+//            changeHospitalButton.setTitle("Change Hospital", for: .normal)
+//            changeHospitalButton.backgroundColor = .white
+//            changeHospitalButton.setTitleColor(UIColor.darkGray, for: .normal)
+//            toggleSignInButton(signedIn: true, userData: loggedInUserData)
+//        }
+//    }
     
 }
 

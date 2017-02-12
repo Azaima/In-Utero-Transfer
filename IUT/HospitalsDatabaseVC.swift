@@ -32,7 +32,7 @@ class HospitalsDatabaseVC: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 9
+        return networks.count * 3
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -41,7 +41,7 @@ class HospitalsDatabaseVC: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "\(networksForHeaders[section / 3]) - Level\(section % 3 + 1)"
+        return "\(networks[section / 3]) - Level\(section % 3 + 1)"
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

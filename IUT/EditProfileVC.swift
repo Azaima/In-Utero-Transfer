@@ -27,6 +27,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UITableViewDataSourc
     @IBOutlet weak var changePasswordButton: UIButton!
     @IBOutlet weak var changeEmailStack: UIStackView!
     @IBOutlet weak var hospitalTable: UITableView!
+    @IBOutlet weak var selectedHospitalLabel: UILabel!
     
     var fields = [UITextField]()
     
@@ -60,6 +61,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UITableViewDataSourc
         hospitalTable.scrollToRow(at: IndexPath (row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
             return HospitalStruct.name == loggedHospitalName
         })!, section: 0), at: UITableViewScrollPosition.none, animated: true)
+        selectedHospitalLabel.text = loggedHospitalName
     }
     
     // MARK: PickerView Delegate
@@ -79,6 +81,14 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UITableViewDataSourc
         return cell!
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        hospitalTable.isHidden = true
+        selectedHospitalLabel.text = hospitalsArray[indexPath.row].name
+    }
+    
+    @IBAction func hospitalLabelPressed(_ sender: UITapGestureRecognizer) {
+        hospitalTable.isHidden = !hospitalTable.isHidden
+    }
     
     
     // MARK: Editing profile fields
@@ -229,6 +239,7 @@ class EditProfileVC: UIViewController, UITextFieldDelegate, UITableViewDataSourc
         
         if sender.tag == 1 {
             hospitalTable.isUserInteractionEnabled = true
+            selectedHospitalLabel.isUserInteractionEnabled = true
             message(text: "Please select the new hospital", alert: false)
             changeButton(button: changeHospitalButton, title: "Confirm", confirm: true)
         }

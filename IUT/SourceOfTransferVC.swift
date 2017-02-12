@@ -15,6 +15,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var selectHospital: UISegmentedControl!
     @IBOutlet weak var gaSelector: UISegmentedControl!
     @IBOutlet weak var hospitalsTable: UITableView!
+    @IBOutlet weak var careNotAvailableLabel: UILabel!
     
     var suggestedHospital: HospitalStruct?
     var hospitalSelected = false
@@ -52,6 +53,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
                 }   else {
                     if closestDistance == nil {
                         closestDistance = currentLocation.distance(from: hospital.location)
+                        closestHospital = hospital
                     }   else {
                         if currentLocation.distance(from: hospital.location) < closestDistance! {
                             closestDistance = currentLocation.distance(from: hospital.location)
@@ -142,7 +144,9 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if hospitalSelected {
-            return hospListForTable[section][0].network!
+            if !hospListForTable[section].isEmpty {
+                return hospListForTable[section][0].network!
+            }
         }
         
         return nil
@@ -166,19 +170,19 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     //MARK: select gestational age
     
     @IBAction func gestationalAgeSelected(_ sender: UISegmentedControl) {
-        var hospitalsTemp = Array(repeating: [HospitalStruct](), count: 3)
-        for net in 0 ... 2 {
+        var careAvailable = false
+        var hospitalsTemp = Array(repeating: [HospitalStruct](), count: sortedHospitalsArray.count)
+        for net in 0 ... sortedHospitalsArray.count - 1 {
             for level in gaSelector.selectedSegmentIndex ... 2 {
+                
                 hospitalsTemp[net] += sortedHospitalsArray[net][level].sorted(by: { (hosp1: HospitalStruct, hosp2: HospitalStruct) -> Bool in
                     return hosp1.distanceFromMe < hosp2.distanceFromMe
                 })
+                
             }
         }
-        var myNetwork = hospitalsTemp.remove(at: hospitalsTemp.index(where: { (net: [HospitalStruct]) -> Bool in
-            return net.contains(where: { (HospitalStruct) -> Bool in
-                return HospitalStruct.network == currentHospital?.network
-            })
-        })!)
+        var myNetwork = hospitalsTemp.remove(at: networks.index(of: (currentHospital?.network)!)!)
+
         if myNetwork.contains(where: { (HospitalStruct) -> Bool in
             return HospitalStruct === currentHospital
         }){
@@ -188,9 +192,23 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         hospListForTable = [myNetwork] + hospitalsTemp.sorted(by: { (net1: [HospitalStruct], net2: [HospitalStruct]) -> Bool in
-            return net1[0].distanceFromMe < net2[0].distanceFromMe
+            if net1.isEmpty {
+                return false
+            } else if net2.isEmpty {
+                return true
+            }   else {
+                return net1[0].distanceFromMe < net2[0].distanceFromMe
+            }
         })
-        hospitalsTable.isHidden = false
+        
+        for network in hospListForTable {
+            
+            careAvailable = !network.isEmpty ? true : careAvailable
+        }
+        
+        hospitalsTable.isHidden = !careAvailable
+        careNotAvailableLabel.isHidden = careAvailable
+        
         hospitalsTable.reloadData()
         hospitalsTable.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         

@@ -12,6 +12,7 @@ import SwiftKeychainWrapper
 
 class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIPickerViewDataSource, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var fullStack: UIStackView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -21,7 +22,9 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
     @IBOutlet weak var firstNameField: UITextField!
     @IBOutlet weak var surnameField: UITextField!
     @IBOutlet weak var rolePicker: UIPickerView!
-//    @IBOutlet weak var hospitalPicker: UIPickerView!
+    @IBOutlet weak var regionTable: UITableView!
+
+    @IBOutlet weak var hospitalStack: UIStackView!
     @IBOutlet weak var hospitalTable: UITableView!
     
     @IBOutlet weak var signInButton: UIButton!
@@ -29,6 +32,9 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
     @IBOutlet weak var forgotPasswordButton: UIButton!
     @IBOutlet weak var extenderView: UIView!
     
+    @IBOutlet weak var navigationBar: UINavigationItem!
+    @IBOutlet weak var selectedRegionLabel: UILabel!
+    @IBOutlet weak var selectedHospitalLabel: UILabel!
     
     
     var register = false
@@ -38,15 +44,15 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
     var hospital: String?
     var userData = [String:Any]()
     var successfulRegistration = false
-    
+    var selectedRegion = ""
     var hospitals = [""]
     var fields = [UITextField]()
+    var listOfHospitalsForTable = [HospitalStruct]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationBar.title = country
         
-        scrollView.contentSize.height = self.view.frame.height
-        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         fields = [emailField,passwordField, confirmPasswordField, firstNameField, surnameField]
         for field in fields {
             field.delegate = self
@@ -58,6 +64,8 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
         rolePicker.dataSource = self
         hospitalTable.delegate = self
         hospitalTable.dataSource = self
+        regionTable.delegate = self
+        regionTable.dataSource = self
         
     }
 
@@ -79,6 +87,8 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
             signInButton.backgroundColor = UIColor(red: 0, green: 230/255, blue: 118/255, alpha: 1)
             
         }
+        scrollView.contentSize.height = fullStack.frame.height
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
 
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -100,14 +110,74 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return hospitalsArray.count
+        switch tableView {
+        case hospitalTable:
+            return listOfHospitalsForTable.count
+        default:
+            return regions.count
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "hospitalCell")
-        cell?.textLabel?.text = hospitalsArray[indexPath.row].name!
+        
+        switch tableView {
+        case hospitalTable:
+            cell?.textLabel?.text = listOfHospitalsForTable[indexPath.row].name!
+        default:
+            cell?.textLabel?.text = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
+                region1.key < region2.key
+            })[indexPath.row].key
+        }
+        
         
         return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if tableView == regionTable {
+            regionTable.isHidden = true
+            selectedRegion = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
+                region1.key < region2.key
+            })[indexPath.row].key
+            if loggedInUserRegion == selectedRegion {
+                
+                listOfHospitalsForTable = hospitalsArray
+                
+                resetHospTable()
+            }   else {
+                
+                listOfHospitalsForTable = [NO_HOSPITAL, EBS_Struct]
+                
+                DataService.ds.REF_HOSPITALS_BY_REGION.child(country).child(selectedRegion).observeSingleEvent(of: .value, with: { (hospitalListSnap) in
+                    
+                    if let hospitalList = hospitalListSnap.children.allObjects as? [FIRDataSnapshot] {
+                        for hospital in hospitalList {
+                            let hosp = HospitalStruct(hospitalSnap: hospital)
+                            self.listOfHospitalsForTable.append(hosp)
+                        }
+                        
+                        self.resetHospTable()
+                    }
+                })
+            }
+            
+        }   else {
+            hospitalTable.isHidden = true
+            selectedHospitalLabel.text = listOfHospitalsForTable[indexPath.row].name
+        }
+    }
+    
+    func resetHospTable() {
+        selectedRegionLabel.text = selectedRegion
+        selectedHospitalLabel.text = ""
+        if hospitalTable.indexPathForSelectedRow != nil {
+            hospitalTable.deselectRow(at: hospitalTable.indexPathForSelectedRow!, animated: false)
+            hospitalTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        }
+        self.hospitalTable.reloadData()
+        self.hospitalStack.isHidden = false
     }
     
     @IBAction func signInPressed(_ sender: UIButton) {
@@ -146,9 +216,9 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
                             } else {
                                 self.hospital = "(None)"
                             }
-                            self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)],"hospital": self.hospital! ,"email":email, "newUser": "true"]
+                            self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)],"hospital": self.hospital! ,"email":email, "newUser": "true", "country": country, "region": self.selectedRegion]
                             
-                            DataService.ds.createFireBaseDBUser(uid: (user?.uid)!, hospital: self.hospital! ,userData: self.userData)
+                            DataService.ds.createFireBaseDBUser(uid: (user?.uid)!, region: self.selectedRegion, hospital: self.hospital! ,userData: self.userData)
                             self.updateMainScreen()
                             self.signInButton.setTitle("Done", for: .normal)
                             self.signInButton.backgroundColor = UIColor(red: 0, green: 230/255, blue: 118/255, alpha: 1)
@@ -190,6 +260,16 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
             return false
         }
         
+        if regionTable.indexPathForSelectedRow == nil {
+            errorLabel.text = "Please select a region"
+            
+            return false
+        }
+        
+        if hospitalTable.indexPathForSelectedRow == nil {
+            hospitalTable.backgroundColor = UIColor(red: 1, green: 205/255, blue: 210/255, alpha: 1)
+        }
+        
         return true
     }
     
@@ -215,13 +295,16 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
     }
     
     func updateMainScreen() {
-        mainscreen?.toggleSignInButton(signedIn: true, userData: userData)
         
         KeychainWrapper.standard.set(userID!, forKey: USER_UID)
         
-        
         loggedInUserID = userID
-        loggedInUserData = userData
+        country = userData["country"] as! String
+        loggedInUserRegion = userData["region"] as! String
+        mainscreen?.prepareDataBase {
+            loggedInUserData = self.userData
+        }
+        
         
     }
     
@@ -233,5 +316,13 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
             self.updateMainScreen()
             _ = self.navigationController?.popViewController(animated: true)
         })
+    }
+    
+    @IBAction func labelPressed(_ sender: UITapGestureRecognizer) {
+        regionTable.isHidden = !regionTable.isHidden
+    }
+    
+    @IBAction func hospitalLabelPressed(_ sender: Any) {
+        hospitalTable.isHidden = !hospitalTable.isHidden
     }
 }

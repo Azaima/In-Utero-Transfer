@@ -23,6 +23,8 @@
 		E72F89DF1E4A37F300C08FF3 /* ResetPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */; };
 		E72F89E11E4A84F300C08FF3 /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */; };
 		E72F89E31E4D0A6E00C08FF3 /* FeedbackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */; };
+		E7456FE21E4F3344004D24EC /* UltimateUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7456FE11E4F3344004D24EC /* UltimateUserVC.swift */; };
+		E7456FE41E50B20B004D24EC /* AddNewRegionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7456FE31E50B20B004D24EC /* AddNewRegionVC.swift */; };
 		E749AEBF1E4759AE007AB3A1 /* UsersTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */; };
 		E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */; };
 		E749AEC31E47E1B5007AB3A1 /* FeedbackReviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */; };
@@ -54,6 +56,8 @@
 		E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordVC.swift; sourceTree = "<group>"; };
 		E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
 		E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackCell.swift; sourceTree = "<group>"; };
+		E7456FE11E4F3344004D24EC /* UltimateUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UltimateUserVC.swift; sourceTree = "<group>"; };
+		E7456FE31E50B20B004D24EC /* AddNewRegionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewRegionVC.swift; sourceTree = "<group>"; };
 		E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersTableVC.swift; sourceTree = "<group>"; };
 		E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackListVC.swift; sourceTree = "<group>"; };
 		E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackReviewVC.swift; sourceTree = "<group>"; };
@@ -144,6 +148,8 @@
 				E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */,
 				E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */,
 				E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */,
+				E7456FE11E4F3344004D24EC /* UltimateUserVC.swift */,
+				E7456FE31E50B20B004D24EC /* AddNewRegionVC.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -308,8 +314,10 @@
 				E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */,
 				E76CD6F41E472987005E9D5E /* ReviewUserVC.swift in Sources */,
 				E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */,
+				E7456FE21E4F3344004D24EC /* UltimateUserVC.swift in Sources */,
 				E79E2D341E460B0500786358 /* FeedbackVC.swift in Sources */,
 				E70B32AA1E3EEAD3000634AD /* MainVC.swift in Sources */,
+				E7456FE41E50B20B004D24EC /* AddNewRegionVC.swift in Sources */,
 				E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */,
 				E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */,
 				E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */,

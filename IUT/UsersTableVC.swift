@@ -50,7 +50,7 @@ class UsersTableVC: UIViewController, UISearchBarDelegate, UITableViewDelegate, 
     
     func getCompleteList() {
         
-        DataService.ds.REF_USER_BYHOSPITAL.child(loggedHospitalName!).observe( .value, with: { (hospitalUsersSnapshot) in
+        DataService.ds.REF_USER_BYHOSPITAL.child(country).child(loggedInUserRegion).child(loggedHospitalName!).observe( .value, with: { (hospitalUsersSnapshot) in
             self.allHospitalUsers = []
             
             let hospitalUsers = hospitalUsersSnapshot.children.allObjects as! [FIRDataSnapshot]

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDataSource, UITableViewDelegate {
 
     var newHospital = false
     var hospital: HospitalStruct?
@@ -21,7 +21,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     @IBOutlet weak var hospitalNameStack: UIStackView!
     @IBOutlet weak var nameField: UITextField!
     @IBOutlet weak var addressTextView: UITextView!
-    @IBOutlet weak var networkPicker: UIPickerView!
+    
     @IBOutlet weak var levelPicker: UIPickerView!
     
     @IBOutlet weak var subspecialityView: UITextView!
@@ -39,16 +39,18 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     @IBOutlet weak var availableCotsField: UITextField!
     @IBOutlet weak var hospitalDetailsStack: UIStackView!
     
+    @IBOutlet weak var networkTable: UITableView!
     @IBOutlet weak var doneButton: UIBarButtonItem!
     
+    @IBOutlet weak var selectedNetworkLabel: UILabel!
     var fields = [UITextField]()
     var textViews = [UITextView]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        networkPicker.delegate = self
-        networkPicker.dataSource = self
+        networkTable.delegate = self
+        networkTable.dataSource = self
         levelPicker.delegate = self
         levelPicker.dataSource = self
 
@@ -97,11 +99,11 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         }
         availableCotsField.isHidden = true
         hospitalNameStack.isHidden = true
-        networkPicker.isUserInteractionEnabled = false
+        networkTable.isUserInteractionEnabled = false
         levelPicker.isUserInteractionEnabled = false
         subspecialityView.isUserInteractionEnabled = false
         geolocationStack.isHidden = true
-        
+        selectedNetworkLabel.isUserInteractionEnabled = false
         
         
         for textview in textViews {
@@ -114,7 +116,12 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         hospitalNameStack.isHidden = true
         nameField.text = hospital?.name!
         addressTextView.text = hospital?.address!
-        networkPicker.selectRow(networks.index(of: (hospital?.network)!)!, inComponent: 0, animated: true)
+        if !viewOnlyMode {
+            networkTable.selectRow(at: IndexPath(row: networks.index(of: (hospital?.network)!)!, section: 0), animated: true, scrollPosition: .none)
+        }
+        
+        selectedNetworkLabel.text = (hospital?.network)!
+        
         levelPicker.selectRow((hospital?.level)! - 1, inComponent: 0, animated: true)
         subspecialityView.text = hospital?.subspecialty
         latitudeField.text = "\((hospital?.location.coordinate.latitude)!)"
@@ -150,6 +157,12 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         if !checkCoordTextField(textField: longitudeField) {
             return false
         }
+        
+        if networkTable.indexPathForSelectedRow == nil {
+            selectedNetworkLabel.backgroundColor = UIColor(red: 1, green: 205/255, blue: 210/255, alpha: 1)
+            return false
+        }
+        
         return true
     }
     
@@ -166,26 +179,50 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         
     }
     
+    //MARK: PickerDelegate
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        switch pickerView {
-        case networkPicker:
-            return networks.count
-        default:
+        
             return 3
-        }
+        
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        switch pickerView {
-        case networkPicker:
-            return networksForHeaders[row]
-        default:
-            return "\(row + 1)"
-        }
+        
+        return "\(row + 1)"
+        
+    }
+    
+    
+    //MARK: NetworkTable Delegate
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return networks.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "networkCellHospDetails")
+        cell?.textLabel?.text = networks[indexPath.row]
+        
+        return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        networkTable.isHidden = true
+        selectedNetworkLabel.text = networks[indexPath.row]
+        selectedNetworkLabel.backgroundColor = nil
+    }
+    
+    @IBAction func networkLabelPressed(_ sender: UITapGestureRecognizer) {
+        networkTable.isHidden = !networkTable.isHidden
     }
     
     @IBAction func donePressed(_ sender: UIBarButtonItem) {
@@ -201,13 +238,14 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
                     "labourWard": labourWardView.text!,
                     "level": levelPicker.selectedRow(inComponent: 0) + 1,
                     "location": ["latitude": Double(latitudeField.text!), "longitude": Double(longitudeField.text!)],
-                    "network": networks[networkPicker.selectedRow(inComponent: 0)],
                     "nicu": nicuView.text!,
+                    "network": networks[(networkTable.indexPathForSelectedRow?.row)!],
                     "nicuCoordinator": nicuCoordinatorView.text,
                     "subspecialty": subspecialityView.text!,
                     "switchBoard": switchboardView.text!,
                     "lastUpdated": formatter.string(from: date),
                     "updatedBy": loggedInUserID!] as [String: Any]
+                    
                     
                     DataService.ds.createHospitalEntry(name: nameField.text!, hospitalData: hospitalData)
                     

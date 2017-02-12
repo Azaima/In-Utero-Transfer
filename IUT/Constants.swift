@@ -37,7 +37,7 @@ var sortedHospitalsArray = [[[HospitalStruct]]]()
 var currentLocation: CLLocation!
 var selectedHospital: HospitalStruct?
 var currentNetwork: Int?
-let networks = ["North Central & East London Neonatal", "North West London Neonatal", "South London Neonatal"]
+
 let networksForHeaders = ["North Central & East", "North West", "South"]
 var hospitalsListing = [HospitalStruct]()
 
@@ -45,12 +45,19 @@ let USER_UID = "uid"
 
 var mainscreen: MainVC?
 
+var country = ""
+var regions = [String: Any]()
+var networks = ["North Central & East London Neonatal", "North West London Neonatal", "South London Neonatal"]
+
 var loggedInUserID: String?
+var loggedInUserRegion = ""
 var loggedInUserData: [String:Any]? {
     didSet{
         mainscreen?.toggleSignInButton(signedIn: true, userData: loggedInUserData)
     }
 }
+
+
 var loggedInUserHospital: HospitalStruct? {
     didSet{
         if mainscreen !== nil {
@@ -81,7 +88,7 @@ func sortHospitalsToNetworksAndLevels() {
     hospitalsListing = hospitalsListed
     print("Started sorting")
     
-    var sortedHospitals = Array(repeating: Array(repeatElement([HospitalStruct](), count: 3)), count: 3)
+    var sortedHospitals = Array(repeating: Array(repeatElement([HospitalStruct](), count: 3)), count: networks.count)
     for hospital in hospitalsListed {
         
         sortedHospitals[networks.index(of: hospital.network)!][hospital.level - 1].append(hospital)
