@@ -38,6 +38,8 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     @IBOutlet weak var regionsTable: UITableView!
     @IBOutlet weak var regionSelectionStack: UIStackView!
     
+    @IBOutlet weak var functionsStack: UIStackView!
+    @IBOutlet weak var signinStack: UIStackView!
     
     var myLocation: CLLocation? {
         didSet{
@@ -100,9 +102,22 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
                                     self.regionSelectionStack.isHidden = false
                                 }
                                 
+                                
                                 if loggedInUserRegion != "" {
                                     self.startPrepping()
                                 }
+                            }   else {
+                                self.regionSelectionStack.isHidden = false
+                                self.selectedRegionLabel.isUserInteractionEnabled = false
+                                self.selectedRegionLabel.text = "No regional data found for your Country.\nTo set up a new region please contact the admin team on azaima@outlook.com"
+                                self.stack.isHidden = false
+                                self.functionsStack.isHidden = true
+                                self.signinStack.isHidden = false
+                                self.signInButton.isHidden = false
+                                self.registerButton.isHidden = true
+                                self.editProfileButton.isHidden = true
+                                self.signOutButton.isHidden = true
+                                
                             }
                         })
                     }
@@ -247,6 +262,8 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         registerButton.isHidden = signedIn
         signOutButton.isHidden = !signedIn
         editProfileButton.isHidden = !signedIn
+        functionsStack.isHidden = false
+        regionSelectionStack.isHidden = true
         loggedIn = signedIn
         
         if signedIn && userData != nil {
@@ -334,14 +351,18 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return regions.count
+        
+            return regions.count
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "hospitalCellmainVC")
-        cell?.textLabel?.text = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
-            return region1.key < region2.key
-        })[indexPath.row].key
+        let cell = tableView.dequeueReusableCell(withIdentifier: "RegionCell")
+        
+        
+            cell?.textLabel?.text = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
+                return region1.key < region2.key
+            })[indexPath.row].key
         
         return cell!
     }
@@ -364,35 +385,6 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         regionsTable.isHidden = !regionsTable.isHidden
     }
     
-    
-//    @IBAction func changeHospitalPressed(_ sender: Any) {
-//        if hospitalTable.isHidden {
-//            hospitalTable.isHidden = false
-//            hospitalTable.selectRow(at: IndexPath(row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-//                return HospitalStruct.name == loggedHospitalName
-//            })!, section: 0), animated: true, scrollPosition: UITableViewScrollPosition.none)
-//            
-//            hospitalTable.scrollToRow(at: IndexPath (row: hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-//                return HospitalStruct.name == loggedHospitalName
-//            })!, section: 0), at: UITableViewScrollPosition.none, animated: true)
-//            
-//            changeHospitalButton.setTitle("Confirm", for: .normal)
-//            changeHospitalButton.backgroundColor = UIColor(red: 81/255, green: 164/255, blue: 1, alpha: 1)
-//            changeHospitalButton.setTitleColor(UIColor.white, for: .normal)
-//
-//        }   else {
-//            hospitalTable.isHidden = true
-//            if hospitalTable.indexPathForSelectedRow != nil {
-//                loggedInUserHospital = hospitalsArray[(hospitalTable.indexPathForSelectedRow?.row)!]
-//            }
-//            loggedHospitalName = loggedInUserHospital?.name
-//            loggedInUserData?["hospital"] = loggedHospitalName!
-//            changeHospitalButton.setTitle("Change Hospital", for: .normal)
-//            changeHospitalButton.backgroundColor = .white
-//            changeHospitalButton.setTitleColor(UIColor.darkGray, for: .normal)
-//            toggleSignInButton(signedIn: true, userData: loggedInUserData)
-//        }
-//    }
     
 }
 

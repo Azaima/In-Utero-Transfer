@@ -14,6 +14,9 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var countryTable: UITableView!
     @IBOutlet weak var regionTable: UITableView!
     @IBOutlet weak var hospitalTable: UITableView!
+    @IBOutlet weak var regionStack: UIStackView!
+    @IBOutlet weak var hospitalStack: UIStackView!
+    @IBOutlet weak var selectHospitalLabel: UILabel!
     
     var tables = [UITableView]()
     
@@ -141,7 +144,7 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             selectedCountry = dataFromRegions.sorted(by: { (entry1: (key: String, value: Any), entry2: (key: String, value: Any)) -> Bool in
                 return entry1.key < entry2.key
             })[indexPath.row].key
-            
+            regionStack.isHidden = false
             regionTable.reloadData()
 
         case regionTable:
@@ -153,8 +156,15 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             if data[selectedCountry] != nil && (data[selectedCountry] as! [String:Any])[selectedRegion] != nil {
                 hospitalData = (data[selectedCountry] as! [String:Any])[selectedRegion] as? [String: Any]
             }
-            
-            hospitalTable.reloadData()
+            hospitalStack.isHidden = false
+            if hospitalData == nil || (hospitalData?.isEmpty)! {
+                hospitalTable.isHidden = true
+                selectHospitalLabel.text = "No hospitals available in region"
+            }   else {
+                hospitalTable.reloadData()
+                hospitalTable.isHidden = false
+                selectHospitalLabel.text = "Select Hospital"
+            }
         default:
             
             selectedHospital = (hospitalData?.sorted(by: { (entry1: (key: String, value: Any), entry2: (key: String, value: Any)) -> Bool in

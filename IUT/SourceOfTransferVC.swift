@@ -100,7 +100,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
             hospitalSelected = true
             updateHospitalsDistance()
             gaSelector.isHidden = false
-            locationLabel.text = "\((currentHospital?.name)!) selected as source of transfer"
+            locationLabel.text = "\((currentHospital?.name)!) selected as source of transfer.\nYour hospital is part of the \((currentHospital?.network)!) network."
         } else {
             hospitalsTable.isHidden = false
         }
