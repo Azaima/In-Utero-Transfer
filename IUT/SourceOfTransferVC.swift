@@ -9,13 +9,15 @@
 import UIKit
 import CoreLocation
 
-class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
+class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var selectHospital: UISegmentedControl!
     @IBOutlet weak var gaSelector: UISegmentedControl!
     @IBOutlet weak var hospitalsTable: UITableView!
     @IBOutlet weak var careNotAvailableLabel: UILabel!
+    @IBOutlet weak var medicalDisordersSelector: UISegmentedControl!
+    @IBOutlet weak var medicalDisordersPicker: UIPickerView!
     
     var suggestedHospital: HospitalStruct?
     var hospitalSelected = false
@@ -29,6 +31,9 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
 
         hospitalsTable.delegate = self
         hospitalsTable.dataSource = self
+        
+        medicalDisordersPicker.delegate = self
+        medicalDisordersPicker.dataSource = self
         
         removeBackButton(self, title: nil)
         checkLocation()
@@ -64,31 +69,40 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
             }
             
             if !foundHospital {
-                updateLabel(foundHospital: false, hospital: closestHospital!)
+                updateLabel(foundHospital: false, hospital: closestHospital)
             }
+        }   else {
+            locationLabel.text = "Unable to detect location"
         }
     }
     
-    func updateLabel(foundHospital: Bool, hospital: HospitalStruct){
+    func updateLabel(foundHospital: Bool, hospital: HospitalStruct?){
         
         suggestedHospital = hospital
-        
-        if foundHospital {
-            locationLabel.text = "You are currently in \((hospital.name)!)"
-            selectHospital.setTitle("Use Current Hospital", forSegmentAt: 0)
+        if hospital != nil {
+            if foundHospital {
+                locationLabel.text = "You are currently in \((hospital?.name)!)"
+                selectHospital.setTitle("Use Current Hospital", forSegmentAt: 0)
+                
+            }   else if !foundHospital && loggedIn && loggedInUserHospital?.name != "E B S" && loggedInUserHospital?.name != "(None)" {
+                locationLabel.text = "You currently are not in a hospital.\nWould you like to use your link hospital?"
+                selectHospital.setTitle("Use Link Hospital", forSegmentAt: 0)
+                
+                suggestedHospital = loggedInUserHospital
+            }   else {
+                locationLabel.text = "You currently are not in a hospital. The closest hospital is \((hospital?.name)!).\nWould you like to use this hospital?"
+                selectHospital.setTitle("Use Suggested Hospital", forSegmentAt: 0)
+                
+            }
             
-        }   else if !foundHospital && loggedIn && loggedInUserHospital?.name != "E B S" && loggedInUserHospital?.name != "(None)" {
-            locationLabel.text = "You currently are not in a hospital.\nWould you like to use your link hospital?"
-            selectHospital.setTitle("Use Link Hospital", forSegmentAt: 0)
+            selectHospital.isHidden = false
+        } else {
             
-            suggestedHospital = loggedInUserHospital
-        }   else {
-            locationLabel.text = "You currently are not in a hospital. The closest hospital is \((hospital.name)!).\nWould you like to use this hospital?"
-            selectHospital.setTitle("Use Suggested Hospital", forSegmentAt: 0)
-            
+            locationLabel.text = "Unable to provide a suggested hospital"
         }
-        
-        selectHospital.isHidden = false
+        if hospitalsListing.isEmpty {
+            locationLabel.text = "\(locationLabel.text!)\n There seems to be a problem with obtaining the data"
+        }
     }
     
     // MARK: Select the source Hospital
@@ -100,7 +114,9 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
             hospitalSelected = true
             updateHospitalsDistance()
             gaSelector.isHidden = false
+            
             locationLabel.text = "\((currentHospital?.name)!) selected as source of transfer.\nYour hospital is part of the \((currentHospital?.network)!) network."
+            hospitalsTable.isHidden = true
         } else {
             hospitalsTable.isHidden = false
         }
@@ -118,7 +134,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if hospitalSelected {
-            return 3
+            return hospListForTable.count
         }   else {
             return 1
         }
@@ -126,7 +142,11 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if hospitalSelected {
-            return hospListForTable[section].count
+            if !hospListForTable.isEmpty && !hospListForTable[section].isEmpty {
+                return hospListForTable[section].count
+            }   else {
+                return 0
+            }
         }   else {
             return hospitalsListing.count
         }
@@ -144,7 +164,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if hospitalSelected {
-            if !hospListForTable[section].isEmpty {
+            if !hospListForTable.isEmpty && !hospListForTable[section].isEmpty {
                 return hospListForTable[section][0].network!
             }
         }
@@ -157,7 +177,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
             
         }   else {
             currentHospital = hospitalsListing[indexPath.row]
-            locationLabel.text = "\((currentHospital?.name)!) selected as source of transfer"
+            locationLabel.text = "\((currentHospital?.name)!) selected as source of transfer.\nYour hospital is part of the \((currentHospital?.network)!) network."
             hospitalSelected = true
             
             hospitalsTable.isHidden = true
@@ -170,13 +190,14 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
     //MARK: select gestational age
     
     @IBAction func gestationalAgeSelected(_ sender: UISegmentedControl) {
+        medicalDisordersSelector.isHidden = false
         var careAvailable = false
         var hospitalsTemp = Array(repeating: [HospitalStruct](), count: sortedHospitalsArray.count)
         for net in 0 ... sortedHospitalsArray.count - 1 {
             for level in gaSelector.selectedSegmentIndex ... 2 {
                 
                 hospitalsTemp[net] += sortedHospitalsArray[net][level].sorted(by: { (hosp1: HospitalStruct, hosp2: HospitalStruct) -> Bool in
-                    return hosp1.distanceFromMe < hosp2.distanceFromMe
+                    return hosp1.distanceFromMe! < hosp2.distanceFromMe!
                 })
                 
             }
@@ -197,7 +218,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
             } else if net2.isEmpty {
                 return true
             }   else {
-                return net1[0].distanceFromMe < net2[0].distanceFromMe
+                return net1[0].distanceFromMe! < net2[0].distanceFromMe!
             }
         })
         
@@ -208,15 +229,49 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
         
         hospitalsTable.isHidden = !careAvailable
         careNotAvailableLabel.isHidden = careAvailable
-        
+        checkSubSpec()
         hospitalsTable.reloadData()
         hospitalsTable.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         
     }
     
+    func checkSubSpec() {
+        if medicalDisordersSelector.selectedSegmentIndex == 1 {
+            let subSpec = subSpecialtyList[medicalDisordersPicker.selectedRow(inComponent: 0)]
+            for (index,list) in hospListForTable.enumerated() {
+                let filteredList =  list.filter({ (h: HospitalStruct) -> Bool in
+                    return h.subspecialty.lowercased().contains(subSpec.lowercased())
+                })
+                
+                hospListForTable[index] = filteredList
+            }
+        }
+    }
     
+    @IBAction func medicalDisorderSelected (_ sender: UISegmentedControl) {
+        medicalDisordersPicker.isHidden = medicalDisordersSelector.selectedSegmentIndex == 0
+        medicalDisordersPicker.selectRow(0, inComponent: 0, animated: false)
+        gestationalAgeSelected(gaSelector)
+        
+    }
     
+    // MARK: PickerView Delegate
     
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return subSpecialtyList.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return subSpecialtyList[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        gestationalAgeSelected(gaSelector)
+    }
     
     // MARK: - Navigation
 

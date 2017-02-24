@@ -26,6 +26,11 @@ class DataService {
     
     private var _REF_FEEDBACK = DB_BASE.child("feedback")
     private var _REF_FEEDBACK_ARCHIVE = DB_BASE.child("feedbackArchive")
+    private var _REF_SUBSPECIALITY = DB_BASE.child("subSpeciality")
+    
+    var REF_SUBSPECIALITY: FIRDatabaseReference {
+        return _REF_SUBSPECIALITY
+    }
     
     var REF_REGIONS: FIRDatabaseReference {
         return _REF_REGIONS

@@ -32,7 +32,7 @@ class FeedbackListVC: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     func setupData() {
         var list = [[String:Any]]()
-        DataService.ds.REF_FEEDBACK.child(hospital).observe(.value, with: { (feedbackSnapshot) in
+        DataService.ds.REF_FEEDBACK.child(country).child(loggedInUserRegion).child(hospital).observe(.value, with: { (feedbackSnapshot) in
             list = []
             let feedSnaps = feedbackSnapshot.children.allObjects as! [FIRDataSnapshot]
             for snap in feedSnaps {

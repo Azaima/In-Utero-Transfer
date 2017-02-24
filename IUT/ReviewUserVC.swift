@@ -26,6 +26,7 @@ class ReviewUserVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSour
     @IBOutlet weak var superUserLabel: UILabel!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var entitlementsStack: UIStackView!
+    @IBOutlet weak var viewCotSwitch: UISwitch!
     
     let roles = ["", "Admin", "Neonatologist", "Obstetrician"]
     
@@ -44,7 +45,7 @@ class ReviewUserVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSour
             self.rolePicker.delegate = self
             self.rolePicker.dataSource = self
             
-            self.switches = [self.administrativeSwitch, self.feedbackSwitch,self.statusSwitch]
+            self.switches = [self.administrativeSwitch, self.feedbackSwitch,self.statusSwitch, self.viewCotSwitch]
             self.setupData()
             if self.userDict["userID"] as! String == loggedInUserID!{
                 self.disablePage("You are not allowed to\nedit your own profile")
@@ -96,6 +97,7 @@ class ReviewUserVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSour
         administrativeSwitch.isOn = userDict["adminRights"] as? String == "true" || userDict["superUser"] as? String == "true"
         feedbackSwitch.isOn = userDict["feedbackRights"] as? String == "true" || userDict["superUser"] as? String == "true"
         statusSwitch.isOn = userDict["statusRights"] as? String == "true" || userDict["superUser"] as? String == "true"
+        viewCotSwitch.isOn = userDict["viewCotStatus"] as? String == "true" || userDict["superUser"] as? String == "true"
         
         
     }
@@ -112,11 +114,12 @@ class ReviewUserVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSour
         var updateDict = [String:Any]()
         updateDict["role"] = roles[rolePicker.selectedRow(inComponent: 0)]
         
-        updateDict["superUser"] = superSwitch.isOn ? "true" : nil
+        updateDict["superUser"] = superSwitch.isOn ? "true" : "false"
         
-        updateDict["adminRights"] = administrativeSwitch.isOn ? "true" : nil
-        updateDict["feedbackRights"] = feedbackSwitch.isOn ? "true" : nil
-        updateDict["statusRights"] = statusSwitch.isOn ? "true" : nil
+        updateDict["adminRights"] = administrativeSwitch.isOn ? "true" : "false"
+        updateDict["feedbackRights"] = feedbackSwitch.isOn ? "true" : "false"
+        updateDict["statusRights"] = statusSwitch.isOn ? "true" : "false"
+        updateDict["viewCotStatus"] = viewCotSwitch.isOn ? "true" : "false"
         
         formatter.dateFormat = "dd-MM-yy HH:mm"
         updateDict["entitlementsReviewed"] = ["reviewerID": loggedInUserID, "reviewDate": formatter.string(from: date)]

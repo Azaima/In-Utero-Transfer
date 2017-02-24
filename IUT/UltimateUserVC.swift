@@ -23,6 +23,7 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     var data = [String:Any]()
     var regionData = [String: Any]()
     var hospitalData: [String:Any]?
+    var hospitalNames = [String]()
     
     var selectedCountry = ""
     var selectedRegion = ""
@@ -102,7 +103,7 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             if hospitalData == nil {
                 return 0
             }   else {
-                return hospitalData!.count
+                return hospitalNames.count
             }
         }
     }
@@ -122,11 +123,13 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             if hospitalData == nil {
                 dictInUse = [:]
             }   else {
-                dictInUse = hospitalData!
+                cell?.textLabel?.text = hospitalNames[indexPath.row]
+                return cell!
+                
             }
         }
         
-        let dictInUseSorted = dictInUse.sorted(by: { (entry1: (key: String, value: Any), entry2: (key: String, value: Any)) -> Bool in
+        let dictInUseSorted =  dictInUse.sorted(by: { (entry1: (key: String, value: Any), entry2: (key: String, value: Any)) -> Bool in
             return entry1.key < entry2.key
         })
         
@@ -155,6 +158,14 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             if data[selectedCountry] != nil && (data[selectedCountry] as! [String:Any])[selectedRegion] != nil {
                 hospitalData = (data[selectedCountry] as! [String:Any])[selectedRegion] as? [String: Any]
+                
+                hospitalNames = ["(None)", "E B S"]
+                
+                for hosp in hospitalData!.sorted(by: { (e1: (key: String, value: Any), e2: (key: String, value: Any)) -> Bool in
+                    return e1.key < e2.key
+                }) {
+                    hospitalNames.append(hosp.key)
+                }
             }
             hospitalStack.isHidden = false
             if hospitalData == nil || (hospitalData?.isEmpty)! {
@@ -166,10 +177,7 @@ class UltimateUserVC: UIViewController, UITableViewDelegate, UITableViewDataSour
                 selectHospitalLabel.text = "Select Hospital"
             }
         default:
-            
-            selectedHospital = (hospitalData?.sorted(by: { (entry1: (key: String, value: Any), entry2: (key: String, value: Any)) -> Bool in
-                return entry1.key < entry2.key
-            })[indexPath.row].key)!
+            selectedHospital = hospitalNames[indexPath.row]
         }
     }
 }

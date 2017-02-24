@@ -18,7 +18,7 @@ class HospitalStruct {
     let level: Int!
     let address: String!
     var subspecialty = ""
-    var distanceFromMe: Double!
+    var distanceFromMe: Double?
     let labourWard: String!
     
     let switchBoard: String!
@@ -46,6 +46,7 @@ class HospitalStruct {
         self.name = hospitalSnap.key
         let hospitalDetails = hospitalSnap.value as! [String: Any]
         
+        
         self.address = hospitalDetails["address"] as! String
         self.labourWard = hospitalDetails["labourWard"] as! String
         self.level = hospitalDetails["level"] as! Int
@@ -61,11 +62,15 @@ class HospitalStruct {
         if hospitalDetails["subspecialty"] != nil {
             self.subspecialty = hospitalDetails["subspecialty"] as! String
         }
-        self.distanceFromMe = currentLocation.distance(from: hospitalLoc)
+        if currentLocation != nil {
+            self.distanceFromMe = currentLocation.distance(from: hospitalLoc)
+        }
         if hospitalDetails["cotStatus"] != nil {
             self.cotsAvailable = (hospitalDetails["cotStatus"] as! [String:Any])["cotsAvailable"] as? Int
             self.cotsUpdate = (hospitalDetails["cotStatus"] as! [String:Any])["update"] as? String
         }
+        
+        
     }
     
 }

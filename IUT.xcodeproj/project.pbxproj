@@ -65,6 +65,7 @@
 		E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackReviewVC.swift; sourceTree = "<group>"; };
 		E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceOfTransferVC.swift; sourceTree = "<group>"; };
 		E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewUserVC.swift; sourceTree = "<group>"; };
+		E77429FC1E5FCB000026EC66 /* IUT.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IUT.entitlements; sourceTree = "<group>"; };
 		E79E2D331E460B0500786358 /* FeedbackVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackVC.swift; sourceTree = "<group>"; };
 		E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdministrativeToolsVC.swift; sourceTree = "<group>"; };
 		E79E2D371E4631EB00786358 /* HospitalsDatabaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalsDatabaseVC.swift; sourceTree = "<group>"; };
@@ -122,6 +123,7 @@
 		E70B32A61E3EEAD3000634AD /* IUT */ = {
 			isa = PBXGroup;
 			children = (
+				E77429FC1E5FCB000026EC66 /* IUT.entitlements */,
 				E70B32C01E3EEEBF000634AD /* Model */,
 				E70B32BF1E3EEEB0000634AD /* View */,
 				E70B32BE1E3EEEA4000634AD /* Controller */,
@@ -215,6 +217,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 9MT4EUS42Y;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};

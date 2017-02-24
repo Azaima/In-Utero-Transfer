@@ -38,7 +38,7 @@ var currentLocation: CLLocation!
 var selectedHospital: HospitalStruct?
 var currentNetwork: Int?
 
-let networksForHeaders = ["North Central & East", "North West", "South"]
+
 var hospitalsListing = [HospitalStruct]()
 
 let USER_UID = "uid"
@@ -46,8 +46,10 @@ let USER_UID = "uid"
 var mainscreen: MainVC?
 
 var country = ""
+var allRegions = [String: Any]()
 var regions = [String: Any]()
-var networks = ["North Central & East London Neonatal", "North West London Neonatal", "South London Neonatal"]
+var networks = [String]()
+var subSpecialtyList = [String]()
 
 var loggedInUserID: String?
 var loggedInUserRegion = ""
@@ -62,7 +64,8 @@ var loggedInUserHospital: HospitalStruct? {
     didSet{
         if mainscreen !== nil {
             
-            if loggedInUserHospital?.name != "(None)" && loggedInUserHospital?.name != "E B S" {
+            if loggedInUserHospital?.name != "(None)" && loggedInUserHospital?.name != "E B S" && loggedInUserData?["viewCotStatus"] as? String == "true" {
+                
                 mainscreen?.cotStatusLabel.isHidden = false
                 
                 if loggedInUserHospital?.cotsAvailable != nil {

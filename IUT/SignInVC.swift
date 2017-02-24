@@ -129,6 +129,9 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
             cell?.textLabel?.text = regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
                 region1.key < region2.key
             })[indexPath.row].key
+            print(regions.sorted(by: { (region1: (key: String, value: Any), region2: (key: String, value: Any)) -> Bool in
+                region1.key < region2.key
+            })[indexPath.row].key)
         }
         
         

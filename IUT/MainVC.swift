@@ -43,88 +43,117 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     
     var myLocation: CLLocation? {
         didSet{
-            userLabel.text = "Initiating Application"
-            currentLocation = myLocation
-            if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
-                
-                loggedInUserID = userID
-                
-                DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
-                    
-                    let dataObtained = user.value as? [String: Any]
-                    country = dataObtained?["country"] as! String
-                    loggedInUserRegion = dataObtained?["region"] as! String
-                    
-                    
-                    DataService.ds.REF_REGIONS.child(country).observeSingleEvent(of: .value, with: { (regionsSnap) in
-                        
-                        if let regionsSnap = regionsSnap.value as? [String: Any] {
-                            regions = regionsSnap
-                        }
-                        self.activityIndicator.startAnimating()
-                        self.prepareDataBase {
-                            self.activityIndicator.stopAnimating()
-                            self.stack.isHidden = false
-                            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-                            if self.firstStartup {
-                                self.firstStartup = false
-                            }
-                            loggedInUserData = dataObtained
-
-                            
-                        }
-
-                    })
-                })
-            } else {
-
             
-                geocoder.reverseGeocodeLocation(myLocation!, completionHandler: { (locationName, error) in
-                    if error == nil {
-                        print("\((locationName?[0].country)!)\t \((locationName?[0].addressDictionary?["City"])!)")
-                        country = (locationName?[0].country)!
+            if allRegions.isEmpty {
+                getregionsData()
+            }   else {
+                if myLocation != nil {
+                    userLabel.text = "Initiating Application"
+                    
+                    currentLocation = myLocation
+                    
+                    if let userID = KeychainWrapper.standard.string(forKey: USER_UID) {
                         
-                        DataService.ds.REF_REGIONS.child(country).observeSingleEvent(of: .value, with: { (regionsSnap) in
+                        loggedInUserID = userID
+                        
+                        DataService.ds.REF_USERS.child(userID).observe( .value, with: { (user) in
                             
-                            if let regionsSnap = regionsSnap.value as? [String: Any] {
-                                regions = regionsSnap
+                            if let dataObtained = user.value as? [String: Any] {
+                                country = dataObtained["country"] as! String
+                                loggedInUserRegion = dataObtained["region"] as! String
+                                regions = allRegions[country] as! [String : Any]
                                 
-                                if regions[(locationName?[0].addressDictionary?["City"]) as! String]  != nil {
+                                self.activityIndicator.startAnimating()
+                                self.prepareDataBase {
+                                    self.activityIndicator.stopAnimating()
+                                    self.stack.isHidden = false
+                                    self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
                                     
-                                    loggedInUserRegion = (locationName?[0].addressDictionary?["City"]) as! String
-                                    networks = regions[(locationName?[0].addressDictionary?["City"]) as! String] as! [String]
-                                }   else if regions.count == 1 {
-                                    for region in regions {
-                                        loggedInUserRegion = region.key
-                                        networks = region.value as! [String]
+                                    if self.firstStartup {
+                                        self.firstStartup = false
                                     }
-                                }   else {
-                                    self.regionSelectionStack.isHidden = false
-                                }
-                                
-                                
-                                if loggedInUserRegion != "" {
-                                    self.startPrepping()
+                                    
+                                    loggedInUserData = dataObtained
+
+                                    
                                 }
                             }   else {
-                                self.regionSelectionStack.isHidden = false
-                                self.selectedRegionLabel.isUserInteractionEnabled = false
-                                self.selectedRegionLabel.text = "No regional data found for your Country.\nTo set up a new region please contact the admin team on azaima@outlook.com"
-                                self.stack.isHidden = false
-                                self.functionsStack.isHidden = true
-                                self.signinStack.isHidden = false
-                                self.signInButton.isHidden = false
-                                self.registerButton.isHidden = true
-                                self.editProfileButton.isHidden = true
-                                self.signOutButton.isHidden = true
+                                self.unableToObtainData()
+                            }
+
+                            
+                        })
+                    } else {
+
+                    
+                        geocoder.reverseGeocodeLocation(myLocation!, completionHandler: { (locationName, error) in
+                            if error == nil {
                                 
+                                if locationName != nil  {
+                                    country = (locationName?[0].country)!
+                                    let region = locationName?[0].subAdministrativeArea
+                                    
+                                    
+                                    if allRegions[country] != nil {
+                                            regions = allRegions[country] as! [String : Any]
+                                    
+                                            if regions[region!]  != nil {
+                                                
+                                                print("Ahmed: Region is London which is where you are")
+                                                loggedInUserRegion = region!
+                                                networks = regions[region!] as! [String]
+                                            }   else if regions.count == 1 {
+                                                for region in regions {
+                                                    
+                                                    loggedInUserRegion = region.key
+                                                    networks = region.value as! [String]
+                                                }
+                                            }   else {
+                                            
+                                                print("Ahmed: You need to select a region")
+                                                self.regionSelectionStack.isHidden = false
+                                            }
+                                            
+                                            
+                                            if loggedInUserRegion != "" {
+                                                print("Ahmed: You are in the region \(loggedInUserRegion)")
+                                                self.startPrepping()
+                                            }
+                                        
+                                    }   else {
+                                        self.regionSelectionStack.isHidden = false
+                                        self.selectedRegionLabel.isUserInteractionEnabled = false
+                                        self.selectedRegionLabel.text = "No regional data found for your Country.\nTo set up a new region please contact the admin team on azaima@outlook.com"
+                                        self.stack.isHidden = false
+                                        self.functionsStack.isHidden = true
+                                        
+                                        self.signinStack.isHidden = false
+                                        self.signInButton.isHidden = false
+                                        self.registerButton.isHidden = true
+                                        self.editProfileButton.isHidden = true
+                                        self.signOutButton.isHidden = true
+                                            
+                                        }
+                                
+                                }   else {
+                                    print("Ahmed: locationName == nil")
+                                }
+                            }   else {
+                                
+                                print("Ahmed: Erorr != nil")
+                                self.toggleSignInButton(signedIn: false, userData: nil)
+                                self.stack.isHidden = false
                             }
                         })
                     }
-                })
+                    
+                    
+                }   else {
+                    
+                    toggleSignInButton(signedIn: false, userData: nil)
+                    self.stack.isHidden = false
+                }
             }
-            
-            
         }
     }
     
@@ -144,17 +173,46 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     var firstStartup = true
     var loggedInComplete = false
     
+    // MARK: This is where it starts **************************************************************************
+    // ********************************************************************************************************
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         mainscreen = self
-        
+        functionButtons = [feedbackButton,updateStatusButton,administrativeToolsButton, changeHospitalButton]
         regionsTable.delegate = self
         regionsTable.dataSource = self
         locationManager.delegate = self
+        
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.startMonitoringSignificantLocationChanges()
-        locationStatus()
-        functionButtons = [feedbackButton,updateStatusButton,administrativeToolsButton, changeHospitalButton]
+        
+        getregionsData()
+    }
+    
+    func getregionsData() {
+        DataService.ds.REF_REGIONS.observe(.value, with: { (regionsSnap) in
+            
+            if let regionsSnapshot = regionsSnap.value as? [String:Any] {
+                allRegions = regionsSnapshot
+                
+                self.locationStatus()
+            }   else {
+                self.unableToObtainData()
+            }
+            
+            DataService.ds.REF_SUBSPECIALITY.observeSingleEvent(of: .value, with: { (subspecSnap) in
+                if let subSpec = subspecSnap.value as? [String] {
+                    subSpecialtyList = subSpec.sorted()
+                }   else {
+                    print("Ahmed: Unable to get Subspec")
+                }
+            })
+        })
+    }
+    
+    func unableToObtainData() {
+        userLabel.text = "Unable to obtain data from the server.\nPlease check your internet connection and restart the application."
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -163,11 +221,20 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         
 //        _ = KeychainWrapper.standard.removeAllKeys()
         
-
+//        correctHospital()
+        
     }
 
     
-    
+    func correctHospital() {
+        
+        DataService.ds.REF_HOSPITALS_BY_REGION.child("United Kingdom").child("London").child("Kings College Hospital").observeSingleEvent(of: .value, with: { (kingsSnap) in
+            if let data = kingsSnap.value as? [String:Any] {
+                DataService.ds.REF_HOSPITALS_BY_REGION.child("United Kingdom").child("London").child("King's College Hospital").updateChildValues(data)
+                DataService.ds.REF_HOSPITALS_BY_REGION.child("United Kingdom").child("London").child("Kings College Hospital").removeValue()
+            }
+        })
+    }
     
     func insertNewDatabase() {
         
@@ -187,11 +254,15 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         }   else {
             locationManager.requestWhenInUseAuthorization()
             
+            
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         locationStatus()
+    }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        locationStatus()
     }
     
     func prepareDataBase(complete: @escaping DownloadComplete) {
@@ -204,21 +275,12 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
                 
                 for snap in snapshot {
                     let hospital = HospitalStruct(hospitalSnap: snap)
-                    if hospital.name == loggedHospitalName {
-                        loggedInUserHospital = hospital
-                    }
+
                     hospitalsArray.append(hospital)
                 }
                 
-                DataService.ds.REF_REGIONS.child(country).child(loggedInUserRegion).observe(.value, with: { (networksSnapshot) in
-                    
-                    if let networksSnap = networksSnapshot.value as? [String] {
-                        networks = networksSnap
-                        
-                        sortHospitalsToNetworksAndLevels()
-                    }
-                })
-
+                networks = (allRegions[country] as! [String:Any])[loggedInUserRegion] as! [String]
+                sortHospitalsToNetworksAndLevels()
                 
             }
             
@@ -277,15 +339,13 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
                 userLabel.text = "\((self.userLabel.text)!)\nUser is linked to \(loggedHospitalName!)"
             }
             feedbackButton.isHidden = false
-            if userData?["hospital"] as! String != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true" {
+            if loggedHospitalName != "(None)" && userData?["statusRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true" {
                 updateStatusButton.isHidden = false
                 
-                if loggedHospitalName != nil && loggedHospitalName != "(None)" && loggedHospitalName != "E B S" {
+                if loggedHospitalName != "E B S" && userData?["viewCotStatus"] as? String == "true"{
                     cotStatusLabel.isHidden = false
-                    let hospital = hospitalsArray[hospitalsArray.index(where: { (HospitalStruct) -> Bool in
-                        return HospitalStruct.name == loggedHospitalName
-                    })!]
-                    if hospital.cotsAvailable != nil {
+
+                    if loggedInUserHospital?.cotsAvailable != nil {
                         cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
                     }   else {
                         cotStatusLabel.text = "Your cot status has never been updated"
@@ -319,6 +379,7 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     @IBAction func signOutPressed(_ sender: UIButton) {
         KeychainWrapper.standard.removeObject(forKey: USER_UID)
         loggedHospitalName = nil
+        loggedInUserData = nil
         try! FIRAuth.auth()?.signOut()
         print("Signed Out Successfully")
         toggleSignInButton(signedIn: false, userData: nil)

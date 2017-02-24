@@ -41,6 +41,8 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
     @IBOutlet weak var networkTable: UITableView!
     @IBOutlet weak var doneButton: UIBarButtonItem!
+    @IBOutlet weak var subspecStack: UIStackView!
+    @IBOutlet weak var nicuCoordStack: UIStackView!
     
     @IBOutlet weak var selectedNetworkLabel: UILabel!
     var fields = [UITextField]()
@@ -49,6 +51,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        removeBackButton(self, title: nil)
         networkTable.delegate = self
         networkTable.dataSource = self
         levelPicker.delegate = self
@@ -61,9 +64,8 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         scrollView.contentSize.height = 2000
         scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         
-        
         if viewOnlyMode {
-            title = (hospital?.name)!
+            
             setupFields()
             setupForViewOnly()
             removeBackButton(self, title: nil)
@@ -71,14 +73,12 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             cotsStack.isHidden = !updatingCotStatus
             hospitalDetailsStack.isHidden = updatingCotStatus
             
-            
-            
-            
             if newHospital {
                 title = "New hospital"
                 
             }   else {
-                title = "\((hospital?.name)!)"
+                title = "Edit Mode"
+                nameField.isUserInteractionEnabled = false
                 setupFields()
             }
             removeBackButton(self, title: "Cancel")
@@ -86,7 +86,6 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         
         navigationBar.title = title
         scrollView.contentSize.height = fullStack.frame.height + 250
-        
         
     }
 
@@ -97,8 +96,12 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         } else {
             doneButton.isEnabled = true
         }
+        
+        subspecStack.isHidden = hospital?.subspecialty == ""
+        nicuCoordStack.isHidden = hospital?.nicuCoordinator == ""
         availableCotsField.isHidden = true
-        hospitalNameStack.isHidden = true
+        cotsStack.isHidden = loggedInUserData?["viewCotStatus"] as? String != "true"
+        
         networkTable.isUserInteractionEnabled = false
         levelPicker.isUserInteractionEnabled = false
         subspecialityView.isUserInteractionEnabled = false
@@ -113,7 +116,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     func setupFields() {
-        hospitalNameStack.isHidden = true
+        hospitalNameStack.isHidden = false
         nameField.text = hospital?.name!
         addressTextView.text = hospital?.address!
         if !viewOnlyMode {
@@ -175,7 +178,6 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
         textField.backgroundColor = UIColor(red: 1, green: 205/255, blue: 210/255, alpha: 1)
         return false
-        
         
     }
     

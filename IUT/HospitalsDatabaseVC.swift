@@ -25,7 +25,7 @@ class HospitalsDatabaseVC: UIViewController, UITableViewDelegate, UITableViewDat
         
         newHospitalButton.isEnabled = !updatingCotStatus
         
-        DataService.ds.REF_HOSPITALS.observe(.value, with: { (snapShot) in
+        DataService.ds.REF_HOSPITALS_BY_REGION.observe(.value, with: { (snapShot) in
             self.hospitalsTable.reloadData()
         })
     
