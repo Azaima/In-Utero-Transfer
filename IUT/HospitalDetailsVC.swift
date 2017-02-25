@@ -100,7 +100,7 @@ class HospitalDetailsVC: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         subspecStack.isHidden = hospital?.subspecialty == ""
         nicuCoordStack.isHidden = hospital?.nicuCoordinator == ""
         availableCotsField.isHidden = true
-        cotsStack.isHidden = loggedInUserData?["viewCotStatus"] as? String != "true"
+        cotsStack.isHidden = !(loggedInUserData?["viewCotStatus"] as? String == "true" || loggedInUserData?["ultimateUser"] as? String == "true" || loggedInUserData?["superUser"] as? String == "true")
         
         networkTable.isUserInteractionEnabled = false
         levelPicker.isUserInteractionEnabled = false

@@ -194,7 +194,7 @@ class SourceOfTransferVC: UIViewController, UITableViewDelegate, UITableViewData
         var careAvailable = false
         var hospitalsTemp = Array(repeating: [HospitalStruct](), count: sortedHospitalsArray.count)
         for net in 0 ... sortedHospitalsArray.count - 1 {
-            for level in gaSelector.selectedSegmentIndex ... 2 {
+            for level in 2 - gaSelector.selectedSegmentIndex ... 2 {
                 
                 hospitalsTemp[net] += sortedHospitalsArray[net][level].sorted(by: { (hosp1: HospitalStruct, hosp2: HospitalStruct) -> Bool in
                     return hosp1.distanceFromMe! < hosp2.distanceFromMe!

@@ -204,6 +204,7 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
             DataService.ds.REF_SUBSPECIALITY.observeSingleEvent(of: .value, with: { (subspecSnap) in
                 if let subSpec = subspecSnap.value as? [String] {
                     subSpecialtyList = subSpec.sorted()
+                    subSpecialtyList.insert("- Scroll To Select -", at: 0)
                 }   else {
                     print("Ahmed: Unable to get Subspec")
                 }
