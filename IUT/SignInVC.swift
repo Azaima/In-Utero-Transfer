@@ -313,7 +313,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
     
     func getUserData() {
 
-        DataService.ds.REF_USERS.child(userID!).observeSingleEvent(of: .value, with: { (user) in
+        DataService.ds.REF_USERS.child(userID!).observe( .value, with: { (user) in
             self.userData = user.value as! [String:Any]
             
             self.updateMainScreen()

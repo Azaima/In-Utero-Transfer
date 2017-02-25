@@ -352,8 +352,12 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
                         cotStatusLabel.text = "Your cot status has never been updated"
                     }
                     
+                }   else {
+                    cotStatusLabel.isHidden = true
                 }
     
+            }   else {
+                updateStatusButton.isHidden = true
             }
             
             if loggedHospitalName == "(None)" || loggedHospitalName == "E B S" {
@@ -362,10 +366,14 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
             
             if userData?["adminRights"] as? String == "true" || userData?["superUser"] as? String == "true" || userData?["ultimateUser"] as? String == "true"{
                 administrativeToolsButton.isHidden = false
+            }   else {
+                administrativeToolsButton.isHidden = true
             }
             
             if userData?["ultimateUser"] as? String == "true" {
                 changeHospitalButton.isHidden = false
+            }   else {
+                changeHospitalButton.isHidden = true
             }
 
         }   else {
