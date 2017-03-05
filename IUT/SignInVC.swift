@@ -39,7 +39,7 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
     
     var register = false
     var mainVC = MainVC()
-    let roles = ["", "Admin", "Neonatologist", "Obstetrician"]
+    let roles = ["- Scroll to Select -", "Admin", "Neonatologist", "Obstetrician"]
     var userID: String?
     var hospital: String?
     var userData = [String:Any]()
@@ -219,7 +219,9 @@ class SignInVC: UIViewController, UIPickerViewDelegate, UITextFieldDelegate, UIP
                             } else {
                                 self.hospital = "(None)"
                             }
-                            self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": self.roles[self.rolePicker.selectedRow(inComponent: 0)],"hospital": self.hospital! ,"email":email, "newUser": "true", "country": country, "region": self.selectedRegion]
+                            
+                            let role = self.rolePicker.selectedRow(inComponent: 0) == 0 ? "" : self.roles[self.rolePicker.selectedRow(inComponent: 0)]
+                            self.userData = ["firstName": self.firstNameField.text!, "surname": self.surnameField.text!, "role": role,"hospital": self.hospital! ,"email":email, "newUser": "true", "country": country, "region": self.selectedRegion]
                             
                             DataService.ds.createFireBaseDBUser(uid: (user?.uid)!, region: self.selectedRegion, hospital: self.hospital! ,userData: self.userData)
                             self.updateMainScreen()

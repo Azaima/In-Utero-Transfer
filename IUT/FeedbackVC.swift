@@ -29,8 +29,10 @@ class FeedbackVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         feedbackText.delegate = self
     }
 
-    @IBAction func submitPressed(_ sender: Any) {
+    @IBAction func submitPressed(_ sender: UIBarButtonItem) {
+        resignFirstResponder()
         if checkFields() {
+            
             
             let hospital = messageFromTransfer ? (currentHospital?.name)! : loggedHospitalName!
             
@@ -64,6 +66,15 @@ class FeedbackVC: UIViewController, UITextFieldDelegate, UITextViewDelegate {
         return true
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
+        textView.resignFirstResponder()
+        return true
+    }
     func textViewDidBeginEditing(_ textView: UITextView) {
         turnWhite(sender: textView)
     }
