@@ -41,6 +41,7 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
     @IBOutlet weak var functionsStack: UIStackView!
     @IBOutlet weak var signinStack: UIStackView!
     
+    @IBOutlet weak var manageUsersButton: UIButton!
     var myLocation: CLLocation? {
         didSet{
             
@@ -372,8 +373,11 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
             
             if userData?["ultimateUser"] as? String == "true" {
                 changeHospitalButton.isHidden = false
+                manageUsersButton.isHidden = false
+                getRegistereedUsers()
             }   else {
                 changeHospitalButton.isHidden = true
+                manageUsersButton.isHidden = true
             }
 
         }   else {
@@ -455,6 +459,32 @@ class MainVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, 
         regionsTable.isHidden = !regionsTable.isHidden
     }
     
-    
+    func getRegistereedUsers () {
+        DataService.ds.REF_USERS.observe(.value, with: { (usersSnap) in
+            
+            if let userSnaps = usersSnap.children.allObjects as? [FIRDataSnapshot] {
+                
+                var usersDict = [String:Any]()
+                for usr in userSnaps {
+                    
+                    usersDict[usr.key] = usr.value as? [String:Any]
+                }
+                
+                let newUsersDict = usersDict.filter({ (userEntry: (key: String, value: Any)) -> Bool in
+                    return (userEntry.value as! [String:Any])["newUser"] as? String == "true"
+                })
+                if !newUsersDict.isEmpty {
+                    self.manageUsersButton.backgroundColor = UIColor(red: 244/255, green: 67/255, blue: 54/255, alpha: 1)
+                    self.manageUsersButton.setTitleColor(UIColor.white, for: .normal)
+                    self.manageUsersButton.setTitle("\(newUsersDict.count) New Users", for: .normal)
+                }   else {
+                    self.manageUsersButton.backgroundColor = .white
+                    self.manageUsersButton.setTitleColor(UIColor(red: 85 / 255, green: 85 / 255, blue: 85 / 255, alpha: 1), for: .normal)
+                    self.manageUsersButton.setTitle("Manage Users", for: .normal)
+                }
+                registeredUsers = usersDict
+            }
+        })
+    }
 }
 

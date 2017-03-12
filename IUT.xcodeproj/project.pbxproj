@@ -30,6 +30,9 @@
 		E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */; };
 		E749AEC31E47E1B5007AB3A1 /* FeedbackReviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */; };
 		E749AEC51E48B35A007AB3A1 /* SourceOfTransferVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */; };
+		E76149BB1E7489190021AAFE /* ManageUsersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76149BA1E7489190021AAFE /* ManageUsersVC.swift */; };
+		E76149BD1E74ABC60021AAFE /* EditUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76149BC1E74ABC60021AAFE /* EditUserVC.swift */; };
+		E76149BF1E74B21F0021AAFE /* HospitalDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76149BE1E74B21F0021AAFE /* HospitalDatabase.swift */; };
 		E76CD6F41E472987005E9D5E /* ReviewUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */; };
 		E79E2D341E460B0500786358 /* FeedbackVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D331E460B0500786358 /* FeedbackVC.swift */; };
 		E79E2D361E46274300786358 /* AdministrativeToolsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */; };
@@ -64,6 +67,9 @@
 		E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackListVC.swift; sourceTree = "<group>"; };
 		E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackReviewVC.swift; sourceTree = "<group>"; };
 		E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceOfTransferVC.swift; sourceTree = "<group>"; };
+		E76149BA1E7489190021AAFE /* ManageUsersVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageUsersVC.swift; sourceTree = "<group>"; };
+		E76149BC1E74ABC60021AAFE /* EditUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserVC.swift; sourceTree = "<group>"; };
+		E76149BE1E74B21F0021AAFE /* HospitalDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalDatabase.swift; sourceTree = "<group>"; };
 		E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewUserVC.swift; sourceTree = "<group>"; };
 		E77429FC1E5FCB000026EC66 /* IUT.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IUT.entitlements; sourceTree = "<group>"; };
 		E79E2D331E460B0500786358 /* FeedbackVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackVC.swift; sourceTree = "<group>"; };
@@ -155,6 +161,8 @@
 				E7456FE11E4F3344004D24EC /* UltimateUserVC.swift */,
 				E7456FE31E50B20B004D24EC /* AddNewRegionVC.swift */,
 				E7456FE51E50D33B004D24EC /* AboutVC.swift */,
+				E76149BA1E7489190021AAFE /* ManageUsersVC.swift */,
+				E76149BC1E74ABC60021AAFE /* EditUserVC.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -176,6 +184,7 @@
 				E70B32A71E3EEAD3000634AD /* AppDelegate.swift */,
 				E70B32C31E40C1B6000634AD /* Constants.swift */,
 				E70B32C71E410F57000634AD /* DataService.swift */,
+				E76149BE1E74B21F0021AAFE /* HospitalDatabase.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -320,6 +329,8 @@
 				E79E2D381E4631EB00786358 /* HospitalsDatabaseVC.swift in Sources */,
 				E70B32C41E40C1B6000634AD /* Constants.swift in Sources */,
 				E749AEC51E48B35A007AB3A1 /* SourceOfTransferVC.swift in Sources */,
+				E76149BD1E74ABC60021AAFE /* EditUserVC.swift in Sources */,
+				E76149BB1E7489190021AAFE /* ManageUsersVC.swift in Sources */,
 				E70B32C81E410F57000634AD /* DataService.swift in Sources */,
 				E72F89E31E4D0A6E00C08FF3 /* FeedbackCell.swift in Sources */,
 				E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */,
@@ -332,6 +343,7 @@
 				E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */,
 				E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */,
 				E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */,
+				E76149BF1E74B21F0021AAFE /* HospitalDatabase.swift in Sources */,
 				E72F89E11E4A84F300C08FF3 /* EditProfileVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

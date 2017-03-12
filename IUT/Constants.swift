@@ -100,3 +100,5 @@ func sortHospitalsToNetworksAndLevels() {
     
     
 }
+
+var registeredUsers = [String:Any]()

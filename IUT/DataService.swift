@@ -95,6 +95,15 @@ class DataService {
         REF_USER_BYHOSPITAL.child(country).child(loggedInUserRegion).child(newHospital).child(loggedInUserID!).updateChildValues(["name": "\((loggedInUserData?["firstName"])!) \((loggedInUserData?["surname"])!)", "newUser": "true"])
     }
     
+    func hospitalChangeByUtimateUser(userID: String, userName: String, oldData: [String:String], newData: [String:String]) {
+        REF_USER_BYHOSPITAL.child(oldData["country"]!).child(oldData["region"]!).child(oldData["hospital"]!).child(userID).removeValue()
+        REF_USER_BYHOSPITAL.child(newData["country"]!).child(newData["region"]!).child(newData["hospital"]!).child(userID).updateChildValues(["name": userName, "newUser": "false"])
+    }
+    
+    func profileUpdateByUltimateUser (userID: String, data: [String:Any]) {
+        REF_USERS.child(userID).updateChildValues(data)
+    }
+    
     func createFeedbackMessage(hospital: String, userID: String, title: String, body: String, hospitalFrom: String) {
         formatter.dateFormat = "dd-MM-yy HH:mm"
         let message = [

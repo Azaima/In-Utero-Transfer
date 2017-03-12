@@ -8,6 +8,9 @@ PODS:
   - Firebase/Database (3.11.1):
     - Firebase/Core
     - FirebaseDatabase (= 3.1.1)
+  - Firebase/Messaging (3.11.1):
+    - Firebase/Core
+    - FirebaseMessaging (= 1.2.1)
   - Firebase/Storage (3.11.1):
     - Firebase/Core
     - FirebaseStorage (= 1.0.5)
@@ -28,6 +31,12 @@ PODS:
   - FirebaseDatabase (3.1.1):
     - FirebaseAnalytics (~> 3.5)
   - FirebaseInstanceID (1.0.8)
+  - FirebaseMessaging (1.2.1):
+    - FirebaseAnalytics (~> 3.4)
+    - FirebaseInstanceID (~> 1.0)
+    - GoogleInterchangeUtilities (~> 1.2)
+    - GoogleSymbolUtilities (~> 1.1)
+    - GoogleToolboxForMac/Logger (~> 2.1)
   - FirebaseStorage (1.0.5):
     - FirebaseAnalytics (~> 3.5)
     - GTMSessionFetcher/Core (~> 1.1)
@@ -37,6 +46,8 @@ PODS:
   - GoogleToolboxForMac/DebugUtils (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - GoogleToolboxForMac/Defines (2.1.1)
+  - GoogleToolboxForMac/Logger (2.1.1):
+    - GoogleToolboxForMac/Defines (= 2.1.1)
   - GoogleToolboxForMac/NSData+zlib (2.1.1):
     - GoogleToolboxForMac/Defines (= 2.1.1)
   - GoogleToolboxForMac/NSDictionary+URLArguments (2.1.1):
@@ -51,6 +62,7 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
+  - Firebase/Messaging
   - Firebase/Storage
   - SwiftKeychainWrapper
 
@@ -61,6 +73,7 @@ SPEC CHECKSUMS:
   FirebaseCore: 46afaf2c2e0419ea7d3acfb08cf26a461a75fe85
   FirebaseDatabase: 6de92187481ff0e8e124064f21742e95ee883b02
   FirebaseInstanceID: ba1e640935235e5fac39dfa816fe7660e72e1a8a
+  FirebaseMessaging: acf66347e43c5637c697060c3001d25c809a4131
   FirebaseStorage: 5738284835edb57f0e81d4ae5832bb17c1e4b5fa
   GoogleInterchangeUtilities: d5bc4d88d5b661ab72f9d70c58d02ca8c27ad1f7
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
@@ -68,6 +81,6 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 6f8d8b28b7e345549ac471071608170b31cb4977
   SwiftKeychainWrapper: 38952a3636320ae61bad3513cadd870929de7a4a
 
-PODFILE CHECKSUM: afd4473a8f788d7096d5d54dba15e44328da773f
+PODFILE CHECKSUM: ae5dbefc7eec183e1c1bae4db3b35e105e92b09e
 
 COCOAPODS: 1.1.1
