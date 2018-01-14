@@ -8,74 +8,72 @@
 
 /* Begin PBXBuildFile section */
 		ABDF0B7ACB5C722558989C53 /* Pods_IUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBEECC5A1DBA1D85B8516973 /* Pods_IUT.framework */; };
-		E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32A71E3EEAD3000634AD /* AppDelegate.swift */; };
-		E70B32AA1E3EEAD3000634AD /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32A91E3EEAD3000634AD /* MainVC.swift */; };
 		E70B32AD1E3EEAD3000634AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E70B32AB1E3EEAD3000634AD /* Main.storyboard */; };
-		E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E70B32AE1E3EEAD3000634AD /* IUT.xcdatamodeld */; };
 		E70B32B21E3EEAD3000634AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E70B32B11E3EEAD3000634AD /* Assets.xcassets */; };
 		E70B32B51E3EEAD3000634AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E70B32B31E3EEAD3000634AD /* LaunchScreen.storyboard */; };
 		E70B32BD1E3EEBA0000634AD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */; };
-		E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C11E40C059000634AD /* ShadowEffect.swift */; };
-		E70B32C41E40C1B6000634AD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C31E40C1B6000634AD /* Constants.swift */; };
-		E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C51E40CEAC000634AD /* SignInVC.swift */; };
-		E70B32C81E410F57000634AD /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C71E410F57000634AD /* DataService.swift */; };
-		E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C91E411EC4000634AD /* HospitalStruct.swift */; };
-		E72F89DF1E4A37F300C08FF3 /* ResetPasswordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */; };
-		E72F89E11E4A84F300C08FF3 /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */; };
-		E72F89E31E4D0A6E00C08FF3 /* FeedbackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */; };
-		E7456FE21E4F3344004D24EC /* UltimateUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7456FE11E4F3344004D24EC /* UltimateUserVC.swift */; };
-		E7456FE41E50B20B004D24EC /* AddNewRegionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7456FE31E50B20B004D24EC /* AddNewRegionVC.swift */; };
-		E7456FE61E50D33B004D24EC /* AboutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7456FE51E50D33B004D24EC /* AboutVC.swift */; };
-		E749AEBF1E4759AE007AB3A1 /* UsersTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */; };
-		E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */; };
-		E749AEC31E47E1B5007AB3A1 /* FeedbackReviewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */; };
-		E749AEC51E48B35A007AB3A1 /* SourceOfTransferVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */; };
-		E76149BB1E7489190021AAFE /* ManageUsersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76149BA1E7489190021AAFE /* ManageUsersVC.swift */; };
-		E76149BD1E74ABC60021AAFE /* EditUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76149BC1E74ABC60021AAFE /* EditUserVC.swift */; };
-		E76149BF1E74B21F0021AAFE /* HospitalDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76149BE1E74B21F0021AAFE /* HospitalDatabase.swift */; };
-		E76CD6F41E472987005E9D5E /* ReviewUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */; };
-		E79E2D341E460B0500786358 /* FeedbackVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D331E460B0500786358 /* FeedbackVC.swift */; };
-		E79E2D361E46274300786358 /* AdministrativeToolsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */; };
-		E79E2D381E4631EB00786358 /* HospitalsDatabaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D371E4631EB00786358 /* HospitalsDatabaseVC.swift */; };
-		E79E2D3A1E46604700786358 /* HospitalDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79E2D391E46604700786358 /* HospitalDetailsVC.swift */; };
+		E70B32C21E40C059000634AD /* SpecialEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70B32C11E40C059000634AD /* SpecialEffects.swift */; };
+		E7983F4120068C620034E040 /* HospitalAV.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7983F4020068C620034E040 /* HospitalAV.swift */; };
+		E7C5D92020024D2500E300A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D91B20024D2500E300A8 /* AppDelegate.swift */; };
+		E7C5D92120024D2500E300A8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D91C20024D2500E300A8 /* Constants.swift */; };
+		E7C5D927200262FC00E300A8 /* HomePageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D926200262FC00E300A8 /* HomePageVC.swift */; };
+		E7C5D929200270C800E300A8 /* AboutMessageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D928200270C800E300A8 /* AboutMessageVC.swift */; };
+		E7C5D92C2002B12700E300A8 /* IUT.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D92A2002B12700E300A8 /* IUT.xcdatamodeld */; };
+		E7C5D92E2002B70E00E300A8 /* LoginRegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D92D2002B70E00E300A8 /* LoginRegisterVC.swift */; };
+		E7C5D9302004254500E300A8 /* HospitalMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D92F2004254500E300A8 /* HospitalMarker.swift */; };
+		E7C5D9342004572C00E300A8 /* InfoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D9332004572C00E300A8 /* InfoButton.swift */; };
+		E7C5D93620045BA900E300A8 /* HospitalCotDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D93520045BA900E300A8 /* HospitalCotDetailsVC.swift */; };
+		E7C5D9382004612500E300A8 /* HospitalDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D9372004612500E300A8 /* HospitalDetailsCell.swift */; };
+		E7C5D93A2004771600E300A8 /* HospitalStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D9392004771600E300A8 /* HospitalStructure.swift */; };
+		E7C5D93D20047BC500E300A8 /* CotStatusRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D93C20047BC500E300A8 /* CotStatusRecord.swift */; };
+		E7C5D93F20047C8000E300A8 /* CotStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C5D93E20047C8000E300A8 /* CotStatus.swift */; };
+		E7EFE2B020080923005E6298 /* ArrangeTransferVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2AF20080923005E6298 /* ArrangeTransferVC.swift */; };
+		E7EFE2B220081465005E6298 /* HospitalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2B120081465005E6298 /* HospitalCell.swift */; };
+		E7EFE2B42009E317005E6298 /* UpdateCotsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2B32009E317005E6298 /* UpdateCotsVC.swift */; };
+		E7EFE2B7200A0DBE005E6298 /* HospitalAdminVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2B6200A0DBE005E6298 /* HospitalAdminVC.swift */; };
+		E7EFE2B9200A0E6C005E6298 /* UserAdminCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2B8200A0E6C005E6298 /* UserAdminCell.swift */; };
+		E7EFE2BB200A1840005E6298 /* UserAdminRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2BA200A1840005E6298 /* UserAdminRecord.swift */; };
+		E7EFE2BD200A58A9005E6298 /* EditSelfProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2BC200A58A9005E6298 /* EditSelfProfileVC.swift */; };
+		E7EFE2BF200B6F09005E6298 /* SuperUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2BE200B6F09005E6298 /* SuperUserVC.swift */; };
+		E7EFE2C1200B71D6005E6298 /* SuperUserHospitalDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2C0200B71D6005E6298 /* SuperUserHospitalDetailsCell.swift */; };
+		E7EFE2C3200B86C5005E6298 /* EditHospitalDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EFE2C2200B86C5005E6298 /* EditHospitalDetailsVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3AFC87CB6D3C6C2D428AB4DC /* Pods-IUT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IUT.release.xcconfig"; path = "Pods/Target Support Files/Pods-IUT/Pods-IUT.release.xcconfig"; sourceTree = "<group>"; };
 		5EE3192D91B22EE312E46E31 /* Pods-IUT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IUT.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IUT/Pods-IUT.debug.xcconfig"; sourceTree = "<group>"; };
 		E70B32A41E3EEAD3000634AD /* IUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E70B32A71E3EEAD3000634AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E70B32A91E3EEAD3000634AD /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
 		E70B32AC1E3EEAD3000634AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		E70B32AF1E3EEAD3000634AD /* IUT.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IUT.xcdatamodel; sourceTree = "<group>"; };
 		E70B32B11E3EEAD3000634AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E70B32B41E3EEAD3000634AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E70B32B61E3EEAD3000634AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E70B32C11E40C059000634AD /* ShadowEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShadowEffect.swift; sourceTree = "<group>"; };
-		E70B32C31E40C1B6000634AD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		E70B32C51E40CEAC000634AD /* SignInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
-		E70B32C71E410F57000634AD /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
-		E70B32C91E411EC4000634AD /* HospitalStruct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalStruct.swift; sourceTree = "<group>"; };
-		E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordVC.swift; sourceTree = "<group>"; };
-		E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
-		E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackCell.swift; sourceTree = "<group>"; };
-		E7456FE11E4F3344004D24EC /* UltimateUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UltimateUserVC.swift; sourceTree = "<group>"; };
-		E7456FE31E50B20B004D24EC /* AddNewRegionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewRegionVC.swift; sourceTree = "<group>"; };
-		E7456FE51E50D33B004D24EC /* AboutVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutVC.swift; sourceTree = "<group>"; };
-		E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersTableVC.swift; sourceTree = "<group>"; };
-		E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackListVC.swift; sourceTree = "<group>"; };
-		E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackReviewVC.swift; sourceTree = "<group>"; };
-		E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceOfTransferVC.swift; sourceTree = "<group>"; };
-		E76149BA1E7489190021AAFE /* ManageUsersVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManageUsersVC.swift; sourceTree = "<group>"; };
-		E76149BC1E74ABC60021AAFE /* EditUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditUserVC.swift; sourceTree = "<group>"; };
-		E76149BE1E74B21F0021AAFE /* HospitalDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalDatabase.swift; sourceTree = "<group>"; };
-		E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewUserVC.swift; sourceTree = "<group>"; };
+		E70B32C11E40C059000634AD /* SpecialEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpecialEffects.swift; sourceTree = "<group>"; };
 		E77429FC1E5FCB000026EC66 /* IUT.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IUT.entitlements; sourceTree = "<group>"; };
-		E79E2D331E460B0500786358 /* FeedbackVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedbackVC.swift; sourceTree = "<group>"; };
-		E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdministrativeToolsVC.swift; sourceTree = "<group>"; };
-		E79E2D371E4631EB00786358 /* HospitalsDatabaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalsDatabaseVC.swift; sourceTree = "<group>"; };
-		E79E2D391E46604700786358 /* HospitalDetailsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HospitalDetailsVC.swift; sourceTree = "<group>"; };
+		E7983F4020068C620034E040 /* HospitalAV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HospitalAV.swift; sourceTree = "<group>"; };
+		E7C5D91B20024D2500E300A8 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E7C5D91C20024D2500E300A8 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E7C5D926200262FC00E300A8 /* HomePageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePageVC.swift; sourceTree = "<group>"; };
+		E7C5D928200270C800E300A8 /* AboutMessageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMessageVC.swift; sourceTree = "<group>"; };
+		E7C5D92B2002B12700E300A8 /* IUT.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IUT.xcdatamodel; sourceTree = "<group>"; };
+		E7C5D92D2002B70E00E300A8 /* LoginRegisterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRegisterVC.swift; sourceTree = "<group>"; };
+		E7C5D92F2004254500E300A8 /* HospitalMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HospitalMarker.swift; sourceTree = "<group>"; };
+		E7C5D9332004572C00E300A8 /* InfoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoButton.swift; sourceTree = "<group>"; };
+		E7C5D93520045BA900E300A8 /* HospitalCotDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HospitalCotDetailsVC.swift; sourceTree = "<group>"; };
+		E7C5D9372004612500E300A8 /* HospitalDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HospitalDetailsCell.swift; sourceTree = "<group>"; };
+		E7C5D9392004771600E300A8 /* HospitalStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HospitalStructure.swift; sourceTree = "<group>"; };
+		E7C5D93C20047BC500E300A8 /* CotStatusRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CotStatusRecord.swift; sourceTree = "<group>"; };
+		E7C5D93E20047C8000E300A8 /* CotStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CotStatus.swift; sourceTree = "<group>"; };
+		E7EFE2AF20080923005E6298 /* ArrangeTransferVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrangeTransferVC.swift; sourceTree = "<group>"; };
+		E7EFE2B120081465005E6298 /* HospitalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HospitalCell.swift; sourceTree = "<group>"; };
+		E7EFE2B32009E317005E6298 /* UpdateCotsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCotsVC.swift; sourceTree = "<group>"; };
+		E7EFE2B6200A0DBE005E6298 /* HospitalAdminVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HospitalAdminVC.swift; sourceTree = "<group>"; };
+		E7EFE2B8200A0E6C005E6298 /* UserAdminCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAdminCell.swift; sourceTree = "<group>"; };
+		E7EFE2BA200A1840005E6298 /* UserAdminRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAdminRecord.swift; sourceTree = "<group>"; };
+		E7EFE2BC200A58A9005E6298 /* EditSelfProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSelfProfileVC.swift; sourceTree = "<group>"; };
+		E7EFE2BE200B6F09005E6298 /* SuperUserVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuperUserVC.swift; sourceTree = "<group>"; };
+		E7EFE2C0200B71D6005E6298 /* SuperUserHospitalDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuperUserHospitalDetailsCell.swift; sourceTree = "<group>"; };
+		E7EFE2C2200B86C5005E6298 /* EditHospitalDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditHospitalDetailsVC.swift; sourceTree = "<group>"; };
 		FBEECC5A1DBA1D85B8516973 /* Pods_IUT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IUT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -129,64 +127,63 @@
 		E70B32A61E3EEAD3000634AD /* IUT */ = {
 			isa = PBXGroup;
 			children = (
+				E7EFE2B52009E702005E6298 /* View-2 */,
+				E7C5D93B2004772300E300A8 /* Model-2 */,
+				E7C5D92A2002B12700E300A8 /* IUT.xcdatamodeld */,
+				E7C5D92520024DC700E300A8 /* Controller-2 */,
 				E77429FC1E5FCB000026EC66 /* IUT.entitlements */,
-				E70B32C01E3EEEBF000634AD /* Model */,
-				E70B32BF1E3EEEB0000634AD /* View */,
-				E70B32BE1E3EEEA4000634AD /* Controller */,
+				E70B32AB1E3EEAD3000634AD /* Main.storyboard */,
 				E70B32BC1E3EEBA0000634AD /* GoogleService-Info.plist */,
 				E70B32B11E3EEAD3000634AD /* Assets.xcassets */,
 				E70B32B31E3EEAD3000634AD /* LaunchScreen.storyboard */,
 				E70B32B61E3EEAD3000634AD /* Info.plist */,
-				E70B32AE1E3EEAD3000634AD /* IUT.xcdatamodeld */,
 			);
 			path = IUT;
 			sourceTree = "<group>";
 		};
-		E70B32BE1E3EEEA4000634AD /* Controller */ = {
+		E7C5D92520024DC700E300A8 /* Controller-2 */ = {
 			isa = PBXGroup;
 			children = (
-				E70B32A91E3EEAD3000634AD /* MainVC.swift */,
-				E70B32C51E40CEAC000634AD /* SignInVC.swift */,
-				E79E2D331E460B0500786358 /* FeedbackVC.swift */,
-				E79E2D351E46274300786358 /* AdministrativeToolsVC.swift */,
-				E79E2D371E4631EB00786358 /* HospitalsDatabaseVC.swift */,
-				E79E2D391E46604700786358 /* HospitalDetailsVC.swift */,
-				E76CD6F31E472987005E9D5E /* ReviewUserVC.swift */,
-				E749AEBE1E4759AE007AB3A1 /* UsersTableVC.swift */,
-				E749AEC01E47D3D6007AB3A1 /* FeedbackListVC.swift */,
-				E749AEC21E47E1B5007AB3A1 /* FeedbackReviewVC.swift */,
-				E749AEC41E48B35A007AB3A1 /* SourceOfTransferVC.swift */,
-				E72F89DE1E4A37F300C08FF3 /* ResetPasswordVC.swift */,
-				E72F89E01E4A84F300C08FF3 /* EditProfileVC.swift */,
-				E7456FE11E4F3344004D24EC /* UltimateUserVC.swift */,
-				E7456FE31E50B20B004D24EC /* AddNewRegionVC.swift */,
-				E7456FE51E50D33B004D24EC /* AboutVC.swift */,
-				E76149BA1E7489190021AAFE /* ManageUsersVC.swift */,
-				E76149BC1E74ABC60021AAFE /* EditUserVC.swift */,
+				E7C5D926200262FC00E300A8 /* HomePageVC.swift */,
+				E7C5D928200270C800E300A8 /* AboutMessageVC.swift */,
+				E7C5D92D2002B70E00E300A8 /* LoginRegisterVC.swift */,
+				E7C5D93520045BA900E300A8 /* HospitalCotDetailsVC.swift */,
+				E7EFE2AF20080923005E6298 /* ArrangeTransferVC.swift */,
+				E7EFE2B32009E317005E6298 /* UpdateCotsVC.swift */,
+				E7EFE2B6200A0DBE005E6298 /* HospitalAdminVC.swift */,
+				E7EFE2BC200A58A9005E6298 /* EditSelfProfileVC.swift */,
+				E7EFE2BE200B6F09005E6298 /* SuperUserVC.swift */,
+				E7EFE2C2200B86C5005E6298 /* EditHospitalDetailsVC.swift */,
 			);
-			name = Controller;
+			name = "Controller-2";
 			sourceTree = "<group>";
 		};
-		E70B32BF1E3EEEB0000634AD /* View */ = {
+		E7C5D93B2004772300E300A8 /* Model-2 */ = {
 			isa = PBXGroup;
 			children = (
-				E70B32C11E40C059000634AD /* ShadowEffect.swift */,
-				E70B32AB1E3EEAD3000634AD /* Main.storyboard */,
-				E72F89E21E4D0A6E00C08FF3 /* FeedbackCell.swift */,
+				E7C5D91B20024D2500E300A8 /* AppDelegate.swift */,
+				E7C5D91C20024D2500E300A8 /* Constants.swift */,
+				E7C5D9332004572C00E300A8 /* InfoButton.swift */,
+				E7C5D9392004771600E300A8 /* HospitalStructure.swift */,
+				E7C5D93C20047BC500E300A8 /* CotStatusRecord.swift */,
+				E7C5D93E20047C8000E300A8 /* CotStatus.swift */,
+				E7C5D92F2004254500E300A8 /* HospitalMarker.swift */,
+				E7983F4020068C620034E040 /* HospitalAV.swift */,
+				E7EFE2BA200A1840005E6298 /* UserAdminRecord.swift */,
 			);
-			name = View;
+			name = "Model-2";
 			sourceTree = "<group>";
 		};
-		E70B32C01E3EEEBF000634AD /* Model */ = {
+		E7EFE2B52009E702005E6298 /* View-2 */ = {
 			isa = PBXGroup;
 			children = (
-				E70B32C91E411EC4000634AD /* HospitalStruct.swift */,
-				E70B32A71E3EEAD3000634AD /* AppDelegate.swift */,
-				E70B32C31E40C1B6000634AD /* Constants.swift */,
-				E70B32C71E410F57000634AD /* DataService.swift */,
-				E76149BE1E74B21F0021AAFE /* HospitalDatabase.swift */,
+				E7EFE2B120081465005E6298 /* HospitalCell.swift */,
+				E70B32C11E40C059000634AD /* SpecialEffects.swift */,
+				E7C5D9372004612500E300A8 /* HospitalDetailsCell.swift */,
+				E7EFE2B8200A0E6C005E6298 /* UserAdminCell.swift */,
+				E7EFE2C0200B71D6005E6298 /* SuperUserHospitalDetailsCell.swift */,
 			);
-			name = Model;
+			name = "View-2";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -225,6 +222,7 @@
 					E70B32A31E3EEAD3000634AD = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 9MT4EUS42Y;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
@@ -319,32 +317,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E79E2D361E46274300786358 /* AdministrativeToolsVC.swift in Sources */,
-				E749AEC31E47E1B5007AB3A1 /* FeedbackReviewVC.swift in Sources */,
-				E79E2D3A1E46604700786358 /* HospitalDetailsVC.swift in Sources */,
-				E749AEBF1E4759AE007AB3A1 /* UsersTableVC.swift in Sources */,
-				E70B32CA1E411EC4000634AD /* HospitalStruct.swift in Sources */,
-				E72F89DF1E4A37F300C08FF3 /* ResetPasswordVC.swift in Sources */,
-				E7456FE61E50D33B004D24EC /* AboutVC.swift in Sources */,
-				E79E2D381E4631EB00786358 /* HospitalsDatabaseVC.swift in Sources */,
-				E70B32C41E40C1B6000634AD /* Constants.swift in Sources */,
-				E749AEC51E48B35A007AB3A1 /* SourceOfTransferVC.swift in Sources */,
-				E76149BD1E74ABC60021AAFE /* EditUserVC.swift in Sources */,
-				E76149BB1E7489190021AAFE /* ManageUsersVC.swift in Sources */,
-				E70B32C81E410F57000634AD /* DataService.swift in Sources */,
-				E72F89E31E4D0A6E00C08FF3 /* FeedbackCell.swift in Sources */,
-				E70B32C21E40C059000634AD /* ShadowEffect.swift in Sources */,
-				E76CD6F41E472987005E9D5E /* ReviewUserVC.swift in Sources */,
-				E70B32C61E40CEAC000634AD /* SignInVC.swift in Sources */,
-				E7456FE21E4F3344004D24EC /* UltimateUserVC.swift in Sources */,
-				E79E2D341E460B0500786358 /* FeedbackVC.swift in Sources */,
-				E70B32AA1E3EEAD3000634AD /* MainVC.swift in Sources */,
-				E7456FE41E50B20B004D24EC /* AddNewRegionVC.swift in Sources */,
-				E70B32A81E3EEAD3000634AD /* AppDelegate.swift in Sources */,
-				E749AEC11E47D3D6007AB3A1 /* FeedbackListVC.swift in Sources */,
-				E70B32B01E3EEAD3000634AD /* IUT.xcdatamodeld in Sources */,
-				E76149BF1E74B21F0021AAFE /* HospitalDatabase.swift in Sources */,
-				E72F89E11E4A84F300C08FF3 /* EditProfileVC.swift in Sources */,
+				E7EFE2B42009E317005E6298 /* UpdateCotsVC.swift in Sources */,
+				E7983F4120068C620034E040 /* HospitalAV.swift in Sources */,
+				E7EFE2B9200A0E6C005E6298 /* UserAdminCell.swift in Sources */,
+				E7EFE2B020080923005E6298 /* ArrangeTransferVC.swift in Sources */,
+				E7EFE2BF200B6F09005E6298 /* SuperUserVC.swift in Sources */,
+				E7C5D9302004254500E300A8 /* HospitalMarker.swift in Sources */,
+				E7EFE2BB200A1840005E6298 /* UserAdminRecord.swift in Sources */,
+				E7C5D92C2002B12700E300A8 /* IUT.xcdatamodeld in Sources */,
+				E7C5D9382004612500E300A8 /* HospitalDetailsCell.swift in Sources */,
+				E7C5D93D20047BC500E300A8 /* CotStatusRecord.swift in Sources */,
+				E70B32C21E40C059000634AD /* SpecialEffects.swift in Sources */,
+				E7C5D9342004572C00E300A8 /* InfoButton.swift in Sources */,
+				E7EFE2C1200B71D6005E6298 /* SuperUserHospitalDetailsCell.swift in Sources */,
+				E7C5D929200270C800E300A8 /* AboutMessageVC.swift in Sources */,
+				E7C5D93A2004771600E300A8 /* HospitalStructure.swift in Sources */,
+				E7C5D927200262FC00E300A8 /* HomePageVC.swift in Sources */,
+				E7C5D92E2002B70E00E300A8 /* LoginRegisterVC.swift in Sources */,
+				E7C5D93F20047C8000E300A8 /* CotStatus.swift in Sources */,
+				E7EFE2B220081465005E6298 /* HospitalCell.swift in Sources */,
+				E7EFE2BD200A58A9005E6298 /* EditSelfProfileVC.swift in Sources */,
+				E7EFE2B7200A0DBE005E6298 /* HospitalAdminVC.swift in Sources */,
+				E7C5D92020024D2500E300A8 /* AppDelegate.swift in Sources */,
+				E7C5D93620045BA900E300A8 /* HospitalCotDetailsVC.swift in Sources */,
+				E7C5D92120024D2500E300A8 /* Constants.swift in Sources */,
+				E7EFE2C3200B86C5005E6298 /* EditHospitalDetailsVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,7 +473,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Zaima.IUT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -493,7 +491,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Zaima.IUT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -521,12 +520,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		E70B32AE1E3EEAD3000634AD /* IUT.xcdatamodeld */ = {
+		E7C5D92A2002B12700E300A8 /* IUT.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				E70B32AF1E3EEAD3000634AD /* IUT.xcdatamodel */,
+				E7C5D92B2002B12700E300A8 /* IUT.xcdatamodel */,
 			);
-			currentVersion = E70B32AF1E3EEAD3000634AD /* IUT.xcdatamodel */;
+			currentVersion = E7C5D92B2002B12700E300A8 /* IUT.xcdatamodel */;
 			path = IUT.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
