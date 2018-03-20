@@ -26,7 +26,9 @@ class AboutMessageVC: UIViewController {
                 self.aboutMessageField.text = message
                 
             }
-        }) 
+        }) {(error) in
+            self.aboutMessageField.text = "An error occured while attempting to download the message: \(error.localizedDescription)"
+        }
     }
 
     

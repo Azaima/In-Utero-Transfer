@@ -11,6 +11,7 @@ import CoreData
 import Firebase
 import MapKit
 import CoreLocation
+import SwiftKeychainWrapper
 
 class HomePageVC: UIViewController, NSFetchedResultsControllerDelegate, MKMapViewDelegate {
     @IBOutlet weak var indicatorView: UIView!
@@ -27,7 +28,7 @@ class HomePageVC: UIViewController, NSFetchedResultsControllerDelegate, MKMapVie
     @IBOutlet weak var loginRegisterLabel: UILabel!
     
     let alertMessage = UIAlertController(title: nil, message: "", preferredStyle: UIAlertControllerStyle.alert)
-    var controller: NSFetchedResultsController<SessionData>!
+    
     var sessionDataList = [SessionData]()
     
     @IBOutlet weak var arrangeTansferBtn: UIButton!
@@ -37,15 +38,13 @@ class HomePageVC: UIViewController, NSFetchedResultsControllerDelegate, MKMapVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         alertMessage.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
         
         homePage = self
-        
-        
-        
+        fetchSessionData()
         hospMapView.setRegion(MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: 51.500679, longitude: -0.108168), 15000, 15000), animated: true)
         
-        fetchSessionData()
         setupDataBase()
         
         hospMapView.delegate = self
@@ -57,24 +56,23 @@ class HomePageVC: UIViewController, NSFetchedResultsControllerDelegate, MKMapVie
     
     @IBAction func loginTapped(_ sender: Any) {
         if loginRegisterLabel.text == "Sign Out" {
-            
-            
-            do {
-                try FIRAuth.auth()?.signOut()
-                for session in sessionDataList {
-                    
-                    context.delete(session)
-                }
-                
-                context.delete(sessionData!)
-                ad.saveContext()
-                
-                userData = [:]
-                setGreeting(visible: false)
-            }   catch {
-                alertMessage.message = "An error occured while signing out"
-                present(alertMessage, animated: true, completion: nil)
+            var hospitalKey: String?
+            if let key = userData["hospitalKey"] as? String{
+                hospitalKey = key
             }
+            userData = [:]
+            userRights = nil
+            if hospitalKey != nil {
+                if let index = hospitals.index(where: { (hospital) -> Bool in
+                    return hospital.key == hospitalKey
+                }){
+                    let oldHospital = hospitals[index]
+                    oldHospital.markView.image = setImageForAnnotation(for: hospitalKey!, level: oldHospital.level)
+                }
+            }
+            setGreeting(visible: false)
+            let _ = KeychainWrapper.standard.removeAllKeys()
+            setFunctionKeys()
         }   else {
             performSegue(withIdentifier: "loginRegisterSegue", sender: sender)
         }
@@ -106,83 +104,77 @@ class HomePageVC: UIViewController, NSFetchedResultsControllerDelegate, MKMapVie
     }
     
     func fetchSessionData(){
-        let fetchRequest: NSFetchRequest<SessionData> = SessionData.fetchRequest()
-        let dateSort = NSSortDescriptor(key: "lastLogin", ascending: false)
-        fetchRequest.sortDescriptors = [dateSort]
-        controller = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-        controller.delegate = self
-        do {
 
-            try controller.performFetch()
-            if let sessionInfo = controller.fetchedObjects?.last {
-                sessionDataList = controller.fetchedObjects!
-                sessionData = sessionInfo
-                FIRAuth.auth()?.signIn(withEmail: (sessionData?.email)!, password: (sessionData?.password)!, completion: { (user, error) in
-                    if error != nil {
-                        self.alertMessage.message = "An error occured while trying to log in.\n\((error?.localizedDescription)!)"
-                        self.present(self.alertMessage, animated: true, completion: nil)
-                    }   else {
-                        self.getUserData()
-                    }
-                })
-            }
+        if let userUID = KeychainWrapper.standard.string(forKey: "uid"), let userEMAIL = KeychainWrapper.standard.string(forKey: "email"), let userPASSWORD = KeychainWrapper.standard.string(forKey: "password")  {
             
-        }   catch {
-        
+            sessionData =  (userEMAIL, userPASSWORD, userUID)
+            
+            
+        }   else {
+            sessionData = nil
         }
+        
     }
     
     func getUserData(){
         
-        DB_BASE.child("users").child((sessionData?.uid!)!).observe(FIRDataEventType.value, with: { (snapshot) in
+        DB_BASE.child("users").child(sessionData!.uid).observe(FIRDataEventType.value, with: { (snapshot) in
             if let userSnap = snapshot.value as? [String: Any]{
                 userData = userSnap
-                if let index = hospitals.index(where: { (hospital) -> Bool in
-                    return hospital.key == userData["hospitalKey"] as! String
-                }){
-                    let hospital = hospitals[index]
-                    hospital.markView.image = #imageLiteral(resourceName: "Home")
-                    self.hospMapView.setCenter(hospital.location, animated: true)
-                    userData["hospitalStructure"] = hospital
-                    
-                    COTFINDER2_REF.child("usersByHospital").child(hospital.key).child(sessionData!.uid!).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+                
+                if let key = userData["hospitalKey"] as? String {
+                    if let index = hospitals.index(where: { (hospital) -> Bool in
+                        return hospital.key == key
+                    }){
+                        let hospital = hospitals[index]
+                        hospital.markView.image = #imageLiteral(resourceName: "Home")
+                        self.hospMapView.setCenter(hospital.location, animated: true)
+                        userData["hospitalStructure"] = hospital
+                        
+                        COTFINDER2_REF.child("usersByHospital").child(hospital.key).child(sessionData!.uid).observeSingleEvent(of: FIRDataEventType.value, with: { (userRightsSnap) in
                             
-                        let userRights = UserAdminRecord(userFileSnap: snapshot)
-                        self.arrangeTansferBtn.isHidden = false
-                        
-                        if (userRights.updateCots != nil && userRights.updateCots == true) || (userRights.superUser != nil && userRights.superUser == true){
-                            self.updateCotBtn.isHidden = false
-                        }   else {
-                            self.updateCotBtn.isHidden = true
-                        }
-                        
-                        if (userRights.admin != nil && userRights.admin == true) || (userRights.superUser != nil && userRights.superUser == true){
-                            self.hospitalAdminBtn.isHidden = false
-                        }   else {
-                            self.hospitalAdminBtn.isHidden = true
-                        }
-                        
-                        if (userRights.superUser != nil && userRights.superUser == true){
-                            self.superUserBtn.isHidden = false
-                        }   else {
-                            self.superUserBtn.isHidden = true
-                        }
-                        
-                    })
+                            self.userRights = UserAdminRecord(userFileSnap: userRightsSnap)
+                            self.setFunctionKeys()
+                            
+                        })
+                    }
+                }   else {
+                    self.setFunctionKeys()
                 }
                 self.setGreeting(visible: true)
+                
             }
         })
+    }
+    
+    var userRights: UserAdminRecord?
+    func setFunctionKeys(){
+        
+        self.arrangeTansferBtn.isHidden = userRights == nil && userData.isEmpty
+        
+        if (userRights?.updateCots != nil && userRights?.updateCots == true) || (userRights?.superUser != nil && userRights?.superUser == true){
+            self.updateCotBtn.isHidden = false
+        }   else {
+            self.updateCotBtn.isHidden = true
+        }
+        
+        if (userRights?.admin != nil && userRights?.admin == true) || (userRights?.superUser != nil && userRights?.superUser == true){
+            self.hospitalAdminBtn.isHidden = false
+        }   else {
+            self.hospitalAdminBtn.isHidden = true
+        }
+        
+        if (userRights?.superUser != nil && userRights?.superUser == true){
+            self.superUserBtn.isHidden = false
+        }   else {
+            self.superUserBtn.isHidden = true
+        }
     }
     
     func setGreeting(visible: Bool){
         greetingView.isHidden = !visible
         
         if visible {
-            markers[userData["hospitalKey"] as! String]?.image = #imageLiteral(resourceName: "Home")
-            if let location =  markers[userData["hospitalKey"] as! String]?.annotation?.coordinate {
-                hospMapView.setCenter(location, animated: true)
-            }
             greetingLabel.text = "Good \(getGreeting()) \(userData["firstName"]!)."
             switch getGreeting() {
             case "morning":
@@ -212,6 +204,16 @@ class HomePageVC: UIViewController, NSFetchedResultsControllerDelegate, MKMapVie
                     let hospital = HospitalStructure(hospitalSnap: hospitalSnap)
                     hospitals.append(hospital)
                     self.hospMapView.addAnnotation(hospital.mark!)
+                }
+                if sessionData != nil {
+                    FIRAuth.auth()?.signIn(withEmail: (sessionData?.email)!, password: (sessionData?.password)!, completion: { (user, error) in
+                        if error != nil {
+                            self.alertMessage.message = "An error occured while trying to log in.\n\((error?.localizedDescription)!)"
+                            self.present(self.alertMessage, animated: true, completion: nil)
+                        }   else {
+                            self.getUserData()
+                        }
+                    })
                 }
                 self.stopIndicator()
             }
@@ -278,14 +280,15 @@ class HomePageVC: UIViewController, NSFetchedResultsControllerDelegate, MKMapVie
         var update = 2
         if let cotUpdateRecord = cotStatusRecords[key]{
 
-            let time = Int(cotUpdateRecord.lastUpdate.time.timeIntervalSinceNow)
+            if  cotUpdateRecord.lastUpdate.time != nil {
+                let time = Int(cotUpdateRecord.lastUpdate.time!.timeIntervalSinceNow)
 
-            if time > -21600 {
-                update = 0
-            }   else if time > -43200 {
-                update = 1
+                if time > -21600 {
+                    update = 0
+                }   else if time > -43200 {
+                    update = 1
+                }
             }
-
         }
         
         var image: UIImage

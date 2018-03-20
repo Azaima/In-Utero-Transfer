@@ -16,6 +16,8 @@ class UserAdminCell: UITableViewCell {
     @IBOutlet weak var updateCotsBtn: UIButton!
     @IBOutlet weak var adminBtn: UIButton!
     
+    var hospital: HospitalStructure?
+    
     var userRecord: UserAdminRecord? {
         didSet{
             if userRecord != nil {
@@ -76,7 +78,7 @@ class UserAdminCell: UITableViewCell {
             
             let entitlements = ["entitlements": ["admin": admin, "updateCots": cotUpdate]]
             
-            COTFINDER2_REF.child("usersByHospital").child((userData["hospitalStructure"] as! HospitalStructure).key).child(userRecord!.key).updateChildValues(entitlements)
+            COTFINDER2_REF.child("usersByHospital").child(hospital!.key).child(userRecord!.key).updateChildValues(entitlements)
         }
     }
     

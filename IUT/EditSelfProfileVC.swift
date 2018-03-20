@@ -106,7 +106,7 @@ class EditSelfProfileVC: UIViewController, UITextFieldDelegate, UISearchBarDeleg
             
             if let newPassword = newPasswordField.text, let confirmPassword = confirmPasswordField.text, let oldPassword = oldPasswordField.text {
                 if oldPassword == sessionData?.password && newPassword == confirmPassword {
-                    FIRAuth.auth()?.signIn(withEmail: sessionData!.email!, password: oldPassword, completion: { (user, error) in
+                    FIRAuth.auth()?.signIn(withEmail: sessionData!.email, password: oldPassword, completion: { (user, error) in
                         if user != nil && error == nil {
                             self.startIndicator()
                             FIRAuth.auth()?.currentUser?.updatePassword(newPassword, completion: { (error) in
@@ -134,16 +134,16 @@ class EditSelfProfileVC: UIViewController, UITextFieldDelegate, UISearchBarDeleg
                 self.alertMessage.present(self.alertMessage, animated: true, completion: nil)
                 return
             }
-        }   else if emailField.text != userData["email"] as! String && emailField.text != "" && emailField.text != nil {
+        }   else if emailField.text != userData["email"] as? String && emailField.text != "" && emailField.text != nil {
             
-            FIRAuth.auth()?.signIn(withEmail: sessionData!.email!, password: sessionData!.password!, completion: { (user, error) in
+            FIRAuth.auth()?.signIn(withEmail: sessionData!.email, password: sessionData!.password, completion: { (user, error) in
                 if user != nil && error == nil {
                     self.startIndicator()
                     FIRAuth.auth()?.currentUser?.updateEmail(self.emailField.text!, completion: { (error) in
                         if error == nil {
                             sessionData?.email = self.emailField.text!
-                            DB_BASE.child("users").child(sessionData!.uid!).updateChildValues(["email":self.emailField.text!])
-                            COTFINDER2_REF.child("usersByHospital").child(userData["hospitalKey"]! as! String).child(sessionData!.uid!).child("details").updateChildValues(["email": self.emailField.text!])
+                            DB_BASE.child("users").child(sessionData!.uid).updateChildValues(["email":self.emailField.text!])
+                            COTFINDER2_REF.child("usersByHospital").child(userData["hospitalKey"]! as! String).child(sessionData!.uid).child("details").updateChildValues(["email": self.emailField.text!])
                             self.stopIndicator()
                             self.alertMessage.message = "Email successfully updated"
                             self.present(self.alertMessage, animated: true, completion: nil)
@@ -154,10 +154,10 @@ class EditSelfProfileVC: UIViewController, UITextFieldDelegate, UISearchBarDeleg
                     self.alertMessage.present(self.alertMessage, animated: true, completion: nil)
                 }
             })
-        }   else if (firstnameField.text != userData["firstName"]! as! String || surnameField.text != userData["surname"]! as! String) && (firstnameField.text != nil && firstnameField.text != nil && surnameField.text != "" && surnameField.text != nil) {
-            DB_BASE.child("users").child(sessionData!.uid!).updateChildValues(["firstName": self.firstnameField.text!, "surname": self.surnameField.text!])
-            COTFINDER2_REF.child("usersByHospital").child(userData["hospitalKey"]! as! String).child(sessionData!.uid!).child("details").updateChildValues(["firstName": self.firstnameField.text!, "surname": self.surnameField.text!])
-        } else if !hospitalSearchList.isEmpty && hospitalSearchList[hospitalPicker.selectedRow(inComponent: 0)].key != userData["hospitalKey"]! as! String {
+        }   else if (firstnameField.text != userData["firstName"]! as? String || surnameField.text != userData["surname"]! as? String) && (firstnameField.text != nil && firstnameField.text != nil && surnameField.text != "" && surnameField.text != nil) {
+            DB_BASE.child("users").child(sessionData!.uid).updateChildValues(["firstName": self.firstnameField.text!, "surname": self.surnameField.text!])
+            COTFINDER2_REF.child("usersByHospital").child(userData["hospitalKey"]! as! String).child(sessionData!.uid).child("details").updateChildValues(["firstName": self.firstnameField.text!, "surname": self.surnameField.text!])
+        } else if !hospitalSearchList.isEmpty && hospitalSearchList[hospitalPicker.selectedRow(inComponent: 0)].key != userData["hospitalKey"]! as? String {
             let selectedHospital = hospitalSearchList[hospitalPicker.selectedRow(inComponent: 0)]
             let oldHospital = userData["hospitalStructure"]! as!HospitalStructure
             
@@ -165,10 +165,10 @@ class EditSelfProfileVC: UIViewController, UITextFieldDelegate, UISearchBarDeleg
             userData["hospitalKey"] = selectedHospital.key
             userData["hospitalStructure"] = selectedHospital
             
-            DB_BASE.child("users").child(sessionData!.uid!).updateChildValues(["hospital": selectedHospital.name, "hospitalKey": selectedHospital.key])
+            DB_BASE.child("users").child(sessionData!.uid).updateChildValues(["hospital": selectedHospital.name, "hospitalKey": selectedHospital.key])
            
-            COTFINDER2_REF.child("usersByHospital").child(oldHospital.key).child(sessionData!.uid!).removeValue()
-            COTFINDER2_REF.child("usersByHospital").child(selectedHospital.key).child(sessionData!.uid!).child("details").updateChildValues(["firstName": userData["firstName"]! as! String, "surname": userData["surname"]! as! String, "email": sessionData!.email!])
+            COTFINDER2_REF.child("usersByHospital").child(oldHospital.key).child(sessionData!.uid).removeValue()
+            COTFINDER2_REF.child("usersByHospital").child(selectedHospital.key).child(sessionData!.uid).child("details").updateChildValues(["firstName": userData["firstName"]! as! String, "surname": userData["surname"]! as! String, "email": sessionData!.email])
             
             if let index = hospitals.index(where: { (hospital) -> Bool in
                 return hospital.key == oldHospital.key
@@ -180,7 +180,7 @@ class EditSelfProfileVC: UIViewController, UITextFieldDelegate, UISearchBarDeleg
             present(alertMessage, animated: true, completion: nil)
             
         }   else if roles[rolePicker.selectedRow(inComponent: 0)] != userData["role"]! as! String {
-            DB_BASE.child("users").child(sessionData!.uid!).updateChildValues(["role": roles[rolePicker.selectedRow(inComponent: 0)]])
+            DB_BASE.child("users").child(sessionData!.uid).updateChildValues(["role": roles[rolePicker.selectedRow(inComponent: 0)]])
         }
         
     }

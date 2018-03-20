@@ -9,6 +9,30 @@
 import UIKit
 import Firebase
 import CoreLocation
+import MapKit
+
+var homePage: HomePageVC?
+let DB_BASE = FIRDatabase.database().reference()
+let COTFINDER2_REF = FIRDatabase.database().reference().child("cotfinder2")
+
+var hospitals = [HospitalStructure]() {
+    didSet {
+        hospitals.sort { (a: HospitalStructure, b: HospitalStructure) -> Bool in
+            return a.name < b.name
+        }
+    }
+}
+
+var userData = [String: Any]()
+
+
+let ad = UIApplication.shared.delegate as! AppDelegate
+let context = ad.persistentContainer.viewContext
+
+var sessionData: (email: String, password: String, uid: String)?
+let date = Date()
+let dateFormatter = DateFormatter()
+
 
 func removeBackButton (_ viewController: UIViewController, title: String?) {
     
@@ -18,87 +42,71 @@ func removeBackButton (_ viewController: UIViewController, title: String?) {
     }
 }
 
-let date = Date()
-let formatter = DateFormatter()
-
-var loggedIn = false
-
 typealias DownloadComplete = () -> ()
 
-let locationManager = CLLocationManager()
-
-var currentHospital: HospitalStruct?
-
-let NO_HOSPITAL = HospitalStruct(name: "(None)", address: "", location: CLLocation(latitude: 0, longitude: 0), network: "", level: 0, distanceFromMe: 0, subspecialty: "", switchBoard: "", nicuNumber: "", nicuCoordinator: "", labourWard: "")
-let EBS_Struct = HospitalStruct(name: "E B S", address: "", location: CLLocation(latitude: 0, longitude: 0), network: "", level: 0, distanceFromMe: 0, subspecialty: "", switchBoard: "", nicuNumber: "", nicuCoordinator: "", labourWard: "")
-
-var hospitalsArray = [NO_HOSPITAL, EBS_Struct]
-var sortedHospitalsArray = [[[HospitalStruct]]]()
-var currentLocation: CLLocation!
-var selectedHospital: HospitalStruct?
-var currentNetwork: Int?
-
-
-var hospitalsListing = [HospitalStruct]()
-
-let USER_UID = "uid"
-
-var mainscreen: MainVC?
-
-var country = ""
-var allRegions = [String: Any]()
-var regions = [String: Any]()
-var networks = [String]()
-var subSpecialtyList = [String]()
-
-var loggedInUserID: String?
-var loggedInUserRegion = ""
-var loggedInUserData: [String:Any]? {
-    didSet{
-        mainscreen?.toggleSignInButton(signedIn: true, userData: loggedInUserData)
+func getGreeting () -> String {
+    let date = Date()
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "HH"
+    
+    let hour = Int(dateFormatter.string(from: date))
+    if hour! < 12 {
+        return "morning"
+    }   else if hour! < 17 {
+        return "afternoon"
+    }   else {
+        return "evening"
     }
 }
 
+var markers = [String: MKAnnotationView]()
 
-var loggedInUserHospital: HospitalStruct? {
-    didSet{
-        if mainscreen !== nil {
-            
-            if loggedInUserHospital?.name != "(None)" && loggedInUserHospital?.name != "E B S" && loggedInUserData?["viewCotStatus"] as? String == "true" {
+var cotStatusRecords = [String: CotStatusRecord]()
+
+func getCotStatus(for key: String, outcome: String) -> String {
+    
+    if let cotStatusRecord = cotStatusRecords[key]{
+        dateFormatter.dateFormat = "dd-MM-yy HH:mm"
+        
+        var status = "Found record but unable to retrieve update"
+        var hospital: HospitalStructure
+        if let index = hospitals.index(where: { (hospital: HospitalStructure) -> Bool in
+            return hospital.key == key
+        }){
+            hospital = hospitals[index]
+            if let cotIndex = cotStatusRecord.updates.index(where: { (update) -> Bool in
+                return update.key == cotStatusRecord.lastUpdate.key
+            }){
+                let cotUpdate = cotStatusRecord.updates[cotIndex]
                 
-                mainscreen?.cotStatusLabel.isHidden = false
-                
-                if loggedInUserHospital?.cotsAvailable != nil {
-                    
-                    mainscreen?.cotStatusLabel.text = "You currently have \((loggedInUserHospital?.cotsAvailable)!) cots available\nLast updated \((loggedInUserHospital?.cotsUpdate)!)"
+                if outcome == "details" {
+                    status = "Updated at \(cotUpdate.timeStr!))"
+                    status += "\n- SCBU: \(cotUpdate.scbu!)"
+                    status = hospital.level > 1 ? status + "\n- NICU: \(cotUpdate.nicu!)" : status
+                    status = hospital.level > 2 ? status + "\n- Subspecialty: \(cotUpdate.subspecialty!)" : status
+                    status += "\n\(cotUpdate.comments!)"
                 }   else {
-                    mainscreen?.cotStatusLabel.text = "Your cot status has never been updated"
+                    status = "\((cotUpdate.scbu) + (cotUpdate.nicu) + (cotUpdate.subspecialty)) cots available at \(cotUpdate.timeStr!))"
                 }
-                
             }
         }
-    }
-}
-
-
-var loggedHospitalName: String?
-
-func sortHospitalsToNetworksAndLevels() {
-    
-    var hospitalsListed = hospitalsArray
-    
-    hospitalsListed.removeFirst(2)
-    hospitalsListing = hospitalsListed
-    print("Started sorting")
-    
-    var sortedHospitals = Array(repeating: Array(repeatElement([HospitalStruct](), count: 3)), count: networks.count)
-    for hospital in hospitalsListed {
         
-        sortedHospitals[networks.index(of: hospital.network)!][hospital.level - 1].append(hospital)
+        
+        
+        return status
+    }   else {
+        return "Cot Status has never been updated"
     }
-    sortedHospitalsArray = sortedHospitals
     
-    
+   
 }
 
-var registeredUsers = [String:Any]()
+func stringToDate(dateString: String) -> Date? {
+    let dateformatter = DateFormatter()
+    dateformatter.dateFormat = "dd-MM-yy HH:mm"
+    
+    let date = dateformatter.date(from: dateString)
+    return date
+}
+
+

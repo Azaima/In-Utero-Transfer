@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreGraphics
 
 var shadowSelected = false
 var shadowColor = UIColor(red: 157 / 255, green: 157 / 255, blue: 157 / 255, alpha: 1.0).cgColor
@@ -71,7 +72,7 @@ extension UIView {
                 
                 if showingBorder {
                     self.layoutMargins = UIEdgeInsets(top: 5, left: 10, bottom: 10, right: 10)
-                    self.layer.borderColor = CGColor(colorLiteralRed: 0.85, green: 0.85, blue: 0.85, alpha: 1)
+                    self.layer.borderColor = UIColor.darkGray.cgColor
                     self.layer.borderWidth = 1
                     
                 }

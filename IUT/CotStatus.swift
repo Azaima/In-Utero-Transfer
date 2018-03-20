@@ -17,8 +17,9 @@ class CotStatus {
     let scbu: Int!
     let subspecialty: Int!
     let comments: String!
-    let time: Date!
+    var time: Date?
     let user: String!
+    var timeStr: String?
     
     init(updateSnap: FIRDataSnapshot){
         let update = updateSnap.value as! [String : Any]
@@ -30,7 +31,11 @@ class CotStatus {
         subspecialty = update["subspecialty"] as! Int
         comments = update["comments"] as! String
         user = update["user"] as! String
-        time = stringToDate(dateString: update["time"] as! String)
+        if let timeAsDate = stringToDate(dateString: update["time"] as! String) {
+            time = timeAsDate
+        }
+        timeStr = update["time"] as? String
+        
     }
     
 }

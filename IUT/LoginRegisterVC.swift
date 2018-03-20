@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SwiftKeychainWrapper
 
 class LoginRegisterVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UISearchBarDelegate {
 
@@ -77,13 +78,15 @@ class LoginRegisterVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataS
                     self.present(self.alertMessage, animated: true, completion: nil)
                 }   else {
                     if let user = returnedUser {
-                        let sessionInfo = SessionData(context: context)
-                        sessionInfo.email = email
-                        sessionInfo.password = password
-                        sessionInfo.uid = user.uid
-                        sessionInfo.lastLogin = Date () as NSDate
-                        sessionData = sessionInfo
-                        ad.saveContext()
+                        
+                        KeychainWrapper.standard.set(email, forKey: "email")
+                        KeychainWrapper.standard.set(password, forKey: "password")
+                    
+                        KeychainWrapper.standard.set(user.uid, forKey: "uid")
+                    
+                   
+                        sessionData = (email,  password, user.uid)
+    
                         
                         homePage!.getUserData()
                         
@@ -159,9 +162,13 @@ class LoginRegisterVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataS
         }   else if (hospitalSearchField.text != nil && hospitalSearchField.text != "" && hospitalSearchList.isEmpty){
             alertMessage.message = "Please ensure that you have appropriately selected a link hospital."
             present(alertMessage, animated: true, completion: nil)
-        }   else if (registerPasswordField.text == nil || registerPasswordField.text == "" || registerPasswordField.text != confirmPasswordField.text){
+        }   else if (registerPasswordField.text == nil || registerPasswordField.text == ""){
             alertMessage.message = "Incorrect password entered."
             present(alertMessage, animated: true, completion: nil)
+        }   else if  registerPasswordField.text != confirmPasswordField.text {
+            alertMessage.message = "Password mismatch."
+            present(alertMessage, animated: true, completion: nil)
+        
         }   else    {
 
             var selectedHospital: HospitalStructure
@@ -183,29 +190,26 @@ class LoginRegisterVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataS
                 "region": selectedHospital.region,
                 "hospital": selectedHospital.name,
                 "hospitalKey": selectedHospital.key
-            ]
+            ] as [String: Any]
             
-            FIRAuth.auth()?.createUser(withEmail: (registerEmailField.text)!, password: (registerPasswordField.text)!, completion: { (returnedUser, error) in
+            FIRAuth.auth()?.createUser(withEmail: (registerEmailField.text)!.replacingOccurrences(of: " ", with: ""), password: (registerPasswordField.text)!, completion: { (returnedUser, error) in
                 
                 if error == nil {
                     if let user = returnedUser {
-                        let sessionInfo = SessionData(context: context)
-                        sessionInfo.email = user.email!
-                        sessionInfo.password = (self.registerPasswordField.text)!
-                        sessionInfo.uid = user.uid
-                        sessionInfo.lastLogin = Date() as NSDate
+                        KeychainWrapper.standard.set(self.registerEmailField.text!, forKey: "email")
+                        KeychainWrapper.standard.set(self.registerPasswordField.text!, forKey: "password")
                         
-                        sessionData = sessionInfo
-                        ad.saveContext()
+                        KeychainWrapper.standard.set(user.uid, forKey: "uid")
+                        
+                        
+                        sessionData = (self.registerEmailField.text!,  self.registerPasswordField.text!, user.uid)
+                        
                         
                         userData = profile as [String : Any]
                         
-                        
-                        
-                        
                         homePage?.setGreeting(visible: true)
                         
-                        COTFINDER2_REF.child("usersByHospital").child(profile["hospitalKey"]!!).child(user.uid).updateChildValues(["details" : ["firstName": profile["firstName"]!, "surname": profile["surname"]!, "email": profile["email"]!]])
+                        COTFINDER2_REF.child("usersByHospital").child(selectedHospital.key!).child(user.uid).updateChildValues(["details" : ["firstName": profile["firstName"]!, "surname": profile["surname"]!, "email": profile["email"]!]])
                         
                         DB_BASE.child("users").child(user.uid).updateChildValues(profile)
                         
@@ -217,19 +221,13 @@ class LoginRegisterVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataS
                         
                         self.navigationController?.popViewController(animated: true)
                     }
+                }   else {
+                    self.alertMessage.message = "An error occured while trying to create your account: \(error!.localizedDescription)"
+                    self.present(self.alertMessage, animated: true, completion: nil)
+                    
                 }
             })
         }
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

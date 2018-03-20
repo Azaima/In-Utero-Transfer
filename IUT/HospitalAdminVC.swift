@@ -19,9 +19,9 @@ class HospitalAdminVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         didSet {
             userSnaps.sort { (snapA, snapB) -> Bool in
                 
-                let snapADetails = ((snapA.value as! [String: Any])["details"]! as! [String:String])
-                let snapBDetails = ((snapB.value as! [String: Any])["details"]! as! [String:String])
-                return snapADetails["firstName"]! < snapBDetails["firstName"]!
+                let snapADetails = UserAdminRecord(userFileSnap: snapA)
+                let snapBDetails = UserAdminRecord(userFileSnap: snapB)
+                return snapADetails.firstName < snapBDetails.firstName
             }
             
             usersTable.reloadData()
@@ -39,19 +39,14 @@ class HospitalAdminVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         usersTable.delegate = self
         usersTable.dataSource = self
         
-        hospital = hospital == nil ? userData["hospitalStructure"] as! HospitalStructure : hospital
+        hospital = hospital == nil ? userData["hospitalStructure"] as? HospitalStructure : hospital
         
         COTFINDER2_REF.child("usersByHospital").child(hospital!.key).observe(FIRDataEventType.value, with: { (usersSnapshot) in
-            
-            if usersSnapshot != nil {
-                self.userSnaps = usersSnapshot.children.allObjects as! [FIRDataSnapshot]
-                
-            }   else {
-                self.alertMessage.message = "No users are listed for this hospital"
-                self.present(self.alertMessage, animated: true, completion: nil)
-                
-            }
-        })
+            self.userSnaps = usersSnapshot.children.allObjects as! [FIRDataSnapshot]
+        }) {(error) in
+            self.alertMessage.message = "An error occured while attempting to download the users: \(error.localizedDescription)."
+            self.present(self.alertMessage, animated: true, completion: nil)
+        }
         
         usersTable.reloadData()
     }
@@ -66,7 +61,7 @@ class HospitalAdminVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "UserAdminCell") as! UserAdminCell
-        
+        cell.hospital = hospital
         cell.userRecord = UserAdminRecord(userFileSnap:  userSnaps[indexPath.row])
         return cell
     }

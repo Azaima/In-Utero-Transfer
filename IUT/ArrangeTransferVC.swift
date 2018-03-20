@@ -26,10 +26,8 @@ class ArrangeTransferVC: UIViewController, UISearchBarDelegate, UIPickerViewDele
     @IBOutlet weak var selectHospitalBtn: UIButton!
     @IBOutlet weak var hospInNetworkLabel: UILabel!
     
-    @IBOutlet var inNetworkTap: UITapGestureRecognizer!
-    @IBOutlet var outOfNetworkTap: UITapGestureRecognizer!
-    @IBOutlet var outOfRegionTap: UITapGestureRecognizer!
     
+    @IBOutlet weak var tablesScroll: UIScrollView!
     
     var hospitalSearchList = [HospitalStructure]()
     var inNetworkList = [HospitalStructure]()
@@ -73,14 +71,13 @@ class ArrangeTransferVC: UIViewController, UISearchBarDelegate, UIPickerViewDele
                 }
                 
                 sortHospitals()
+                inNetworkTable.isHidden = false
+                outOfNetworkTable.isHidden = true
+                outOfRegionTable.isHidden = true
             }
         }
     }
-    var network = "" {
-        didSet{
-            hospInNetworkLabel.text = "Hospitals in \(network) network"
-        }
-    }
+    var network = "" 
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,6 +113,23 @@ class ArrangeTransferVC: UIViewController, UISearchBarDelegate, UIPickerViewDele
             }
         }
     }
+    @IBAction func networkSelected(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            inNetworkTable.isHidden = false
+            outOfNetworkTable.isHidden = true
+            outOfRegionTable.isHidden = true
+            
+        case 1:
+            inNetworkTable.isHidden = true
+            outOfNetworkTable.isHidden = false
+            outOfRegionTable.isHidden = true
+        default:
+            inNetworkTable.isHidden = true
+            outOfNetworkTable.isHidden = true
+            outOfRegionTable.isHidden = false
+        }
+    }
     
     func setPickerVisibility(as visibility: Bool){
         hospitalPickerStack.isHidden = !visibility
@@ -138,6 +152,10 @@ class ArrangeTransferVC: UIViewController, UISearchBarDelegate, UIPickerViewDele
         }   else {
             hospitalSearchList = []
         }
+        
+        hospitalPickerStack.isHidden = hospitalSearchList.isEmpty
+        selectHospitalBtn.isEnabled = !hospitalSearchList.isEmpty
+        
         hospitalPicker.reloadComponent(0)
         setPickerVisibility(as: true)
     }
@@ -304,17 +322,6 @@ class ArrangeTransferVC: UIViewController, UISearchBarDelegate, UIPickerViewDele
         performSegue(withIdentifier: "hospitalDetails", sender: hospital)
     }
     
-    @IBAction func labelTapped(_ sender: UITapGestureRecognizer) {
-        
-        switch sender {
-        case inNetworkTap:
-            inNetworkTable.isHidden = !inNetworkTable.isHidden
-        case outOfNetworkTap:
-            outOfNetworkTable.isHidden = !outOfNetworkTable.isHidden
-        default:
-            outOfRegionTable.isHidden = !outOfRegionTable.isHidden
-        }
-    }
     
     
     
